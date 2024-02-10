@@ -61,7 +61,7 @@ namespace ApiVault
                         var id = Microsoft.UI.Win32Interop.GetWindowIdFromWindow(handle);
                         var appWindow = Microsoft.UI.Windowing.AppWindow.GetFromWindowId(id);
                         var titleBar = appWindow.TitleBar;
-
+                        titleBar.BackgroundColor = Colors.White.ToWindowsColor();
                         titleBar.ButtonForegroundColor = Colors.White.ToWindowsColor();
                         titleBar.InactiveForegroundColor = Colors.White.ToWindowsColor();
                     });

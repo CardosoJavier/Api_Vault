@@ -9,16 +9,12 @@
 
         <DataTemplate x:Key="MauiAppTitleBarTemplate">
             <!-- Settings for window title bar -->
-            <Grid Background="#7B62FD" Canvas.ZIndex="1" Height="32" VerticalAlignment="Stretch">
+            <Grid Background="#7B62FD"  Canvas.ZIndex="1" Height="32">
                 <!-- Grid for logo and title -->
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="32"/>
-                    <ColumnDefinition/>
+                    <ColumnDefinition Width="70"/>
                 </Grid.ColumnDefinitions>
-                <!-- Logo image -->
-                <Image Margin="2" Source="#"/>
-                <!-- Title bar text -->
-                <TextBlock Grid.Column="1" Text="API Vault" Foreground="White" TextTrimming="CharacterEllipsis" VerticalAlignment="Center" Margin="5,0,0,2"/>
+                <Image Margin="3" Source="logo.png"/>
             </Grid>
         </DataTemplate>
 

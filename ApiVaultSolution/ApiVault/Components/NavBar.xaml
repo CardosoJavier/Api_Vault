@@ -5,5 +5,19 @@
 
     <StackLayout BackgroundColor="#1B1D22">
 
+        <Label 
+            Text="API Vault" 
+            TextColor="White"/>
+        
+        <Button 
+            Text="Dashboard" 
+            TextColor="White" 
+            BackgroundColor="#7B62FD" 
+            WidthRequest="200"
+            HeightRequest="25"
+            HorizontalOptions="Center"
+            VerticalOptions="Center"
+            CornerRadius="15"/>
+
     </StackLayout>
 </ContentView>
