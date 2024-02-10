@@ -1,0 +1,27 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.8.34525.116
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ApiVault", "ApiVault\ApiVault.csproj", "{675855B0-ABB8-463C-AC27-1FE0E239117F}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{675855B0-ABB8-463C-AC27-1FE0E239117F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{675855B0-ABB8-463C-AC27-1FE0E239117F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{675855B0-ABB8-463C-AC27-1FE0E239117F}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{675855B0-ABB8-463C-AC27-1FE0E239117F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{675855B0-ABB8-463C-AC27-1FE0E239117F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{675855B0-ABB8-463C-AC27-1FE0E239117F}.Release|Any CPU.Deploy.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {865B0FA5-908D-431F-8860-C78B6CE1C2CB}
+	EndGlobalSection
+EndGlobal
