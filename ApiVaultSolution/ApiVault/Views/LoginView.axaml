@@ -1,0 +1,90 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="650"
+             x:Class="ApiVault.Views.LoginView">
+
+	<!--Parent Stack-->
+	<Panel Background="#1B1D22">
+		<Border
+			Background="#272A31"
+					Height="550"
+					Width="400"
+					HorizontalAlignment="Center"
+					VerticalAlignment="Center"
+					CornerRadius="30"
+					BorderBrush="#7B62FD"
+					BorderThickness="2">
+			<StackPanel VerticalAlignment="Top">
+				<!-- Logo -->
+				<Image
+					Width="300"
+					Source="avares://ApiVault/Assets/Logos/welcomeLogo.png"
+					HorizontalAlignment="Center"
+					VerticalAlignment="Top"
+					Margin="0,30,0,100"/>
+
+				<!-- Input fields -->
+				<TextBox
+					Width="300"
+					Height="40"
+					Watermark="Username"
+					FontSize="18"
+					VerticalContentAlignment="Center"
+					HorizontalContentAlignment="Left"
+					Background="White"
+					SelectionBrush="#7B62FD"
+					/>
+
+				<TextBox
+					Width="300"
+					Height="40"
+					Watermark="Password"
+					FontSize="18"
+					VerticalContentAlignment="Center"
+					HorizontalContentAlignment="Left"
+					PasswordChar="*"
+					Margin="10,10,10,0"
+					Background="White"
+					SelectionBrush="#7B62FD"
+					/>
+
+				<!-- SignIn Btn -->
+				<Button
+					Background="#7B62FD"
+					Foreground="White"
+					Width="100"
+					Height="30"
+					CornerRadius="5"
+					HorizontalAlignment="Center"
+					VerticalAlignment="Center"
+					HorizontalContentAlignment="Center"
+					VerticalContentAlignment="Center"
+					Margin="10"
+					>
+					Sign In
+				</Button>
+				
+				<!-- Sign up -->
+				<StackPanel 
+					Orientation="Horizontal"
+					VerticalAlignment="Center"
+					HorizontalAlignment="Center"
+					Margin="0,90,0,0">
+					<TextBlock 
+						Text="Don’t have an account?"
+						TextAlignment="Center"
+						Foreground="White"
+						Margin="10"
+						/>
+					<Button
+						Background="#7B62FD"
+						Foreground="White"
+						CornerRadius="5"
+						>Sign up!</Button>
+				</StackPanel>
+			</StackPanel>
+		</Border>
+	</Panel>
+</UserControl>

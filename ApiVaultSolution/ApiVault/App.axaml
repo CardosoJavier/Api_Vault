@@ -1,0 +1,46 @@
+<Application xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="ApiVault.App"
+             xmlns:local="using:ApiVault"
+             RequestedThemeVariant="Default">
+             <!-- "Default" ThemeVariant follows system theme variant. "Dark" or "Light" are other available options. -->
+
+    <Application.DataTemplates>
+        <local:ViewLocator/>
+    </Application.DataTemplates>
+  
+    <Application.Styles>
+		
+		<!-- Default Style -->
+        <FluentTheme />
+		
+		<!-- Override Universal Styles -->
+		<!-- https://github.com/AvaloniaUI/Avalonia/tree/master/src/Avalonia.Themes.Fluent/Controls -->
+		
+		
+		<!-- - - - - - - - - - - - - -  TextBox Styling - - - - - - - - - - - - -   -->
+		<!-- TextBox No-Focus -->
+		<Style Selector="TextBox /template/ Border#PART_BorderElement">
+			<Setter Property="Background" Value="White"/>
+		</Style>
+		
+		<!-- TextBox Focus -->
+		<Style Selector="TextBox:focus /template/ Border#PART_BorderElement">
+			<Setter Property="BorderThickness" Value="2" />
+			<Setter Property="BorderBrush" Value="#7B62FD" />
+		</Style>
+
+		<!-- TextBox Hover -->
+		<Style Selector="TextBox:pointerover /template/ Border#PART_BorderElement">
+			<Setter Property="Background" Value="#DBD4FF"/>
+		</Style>
+
+		<!-- - - - - - - - - - - - - -  Button Styling - - - - - - - - - - - - -   -->
+		<!-- Button hover -->
+		<Style Selector="Button:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+			<Setter Property="Background" Value="#8E78FF"/>
+			<Setter Property="Foreground" Value="White"/>
+		</Style>
+		
+    </Application.Styles>
+</Application>
