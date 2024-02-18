@@ -1,4 +1,5 @@
 using Avalonia.Controls;
+using Avalonia.Interactivity;
 
 namespace ApiVault.Views
 {
@@ -7,6 +8,15 @@ namespace ApiVault.Views
         public SignUpView()
         {
             InitializeComponent();
+        }
+
+        // Navigate to sign in
+        public void NavToSignIn(object source, RoutedEventArgs args)
+        {
+            if (this.Parent is Window window)
+            {
+                window.Content = new LoginView();
+            }
         }
     }
 }

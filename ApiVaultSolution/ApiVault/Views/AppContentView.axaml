@@ -1,0 +1,55 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			 xmlns:vm="using:ApiVault.ViewModels"
+             mc:Ignorable="d" d:DesignWidth="1200" d:DesignHeight="800"
+             x:Class="ApiVault.Views.AppContentView"
+			 x:DataType="vm:AppContentViewModel">
+
+	<!-- View parent-->
+	<SplitView
+		IsPaneOpen="{Binding IsPaneOpen}"
+		OpenPaneLength="250"
+		CompactPaneLength="60"
+		DisplayMode="CompactInline"
+		Background="#1B1D22"
+		PaneBackground="#1B1D22"
+		>
+		<!-- Left-side navbar-->
+		<SplitView.Pane>
+			<StackPanel
+				Spacing="15"
+				Margin="10">
+				<!-- Open/close toggle btn-->
+				<Button
+					Foreground="White"
+					Background="#7B62FD"
+					Command="{Binding ToggleMenuCommand}">
+					<PathIcon Data="{StaticResource line_horizontal_3_regular}"></PathIcon>
+				</Button>
+				<!-- Menu option-->
+				<ListBox ItemsSource="{Binding NavBarBtns}" SelectedItem="{Binding SelectedNavOption}">
+					<ListBox.ItemTemplate>
+						<DataTemplate DataType="{x:Type vm:ListItemTemplate}">
+							<StackPanel Spacing="15" Orientation="Horizontal">
+								<PathIcon Data="{Binding Icon}"/>
+								<TextBlock Text="{Binding Label}"></TextBlock>
+								
+							</StackPanel>
+						</DataTemplate>
+					</ListBox.ItemTemplate>
+				</ListBox>
+			</StackPanel>
+		</SplitView.Pane>
+
+		<!-- Screen content -->
+		<SplitView.Content>
+			<Border CornerRadius="40 0 0 0"
+					Background="#000000">
+				<TransitioningContentControl Content="{Binding CurrentPage}" />
+				
+			</Border>
+		</SplitView.Content>
+	</SplitView>
+</UserControl>

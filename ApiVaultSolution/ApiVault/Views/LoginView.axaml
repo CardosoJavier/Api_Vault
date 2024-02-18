@@ -27,6 +27,7 @@
 
 				<!-- Input fields -->
 				<TextBox
+					Name="usernameBox"
 					Width="300"
 					Height="40"
 					Watermark="Username"
@@ -38,6 +39,7 @@
 					/>
 
 				<TextBox
+					Name="passwordName"
 					Width="300"
 					Height="40"
 					Watermark="Password"
@@ -52,6 +54,7 @@
 
 				<!-- SignIn Btn -->
 				<Button
+					Name="SignInBtn"
 					Background="#7B62FD"
 					Foreground="White"
 					Width="100"
@@ -62,6 +65,7 @@
 					HorizontalContentAlignment="Center"
 					VerticalContentAlignment="Center"
 					Margin="10"
+					Click="NavToDashboard"
 					>
 					Sign In
 				</Button>
@@ -79,9 +83,11 @@
 						Margin="10"
 						/>
 					<Button
+						Name="SignUpBtn"
 						Background="#7B62FD"
 						Foreground="White"
 						CornerRadius="5"
+						Click="NavToSignUpView"
 						>Sign up!</Button>
 				</StackPanel>
 			</StackPanel>

@@ -107,6 +107,7 @@
 						Background="#7B62FD"
 						Foreground="White"
 						CornerRadius="5"
+						Click="NavToSignIn"
 						>Sign in</Button>
 				</StackPanel>
 			</StackPanel>

@@ -1,4 +1,6 @@
 using Avalonia.Controls;
+using Avalonia.Interactivity;
+using ReactiveUI;
 
 namespace ApiVault.Views
 {
@@ -7,6 +9,7 @@ namespace ApiVault.Views
         public MainWindow()
         {
             InitializeComponent();
+
         }
     }
 }
