@@ -48,5 +48,8 @@
     <Compile Update="Views\AppContentView.axaml.cs">
       <DependentUpon>AppContentView.axaml</DependentUpon>
     </Compile>
+    <Compile Update="Views\DisconnectPageView.axaml.cs">
+      <DependentUpon>DisconnectPageView.axaml</DependentUpon>
+    </Compile>
   </ItemGroup>
 </Project>

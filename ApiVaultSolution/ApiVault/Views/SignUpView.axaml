@@ -6,7 +6,7 @@
              x:Class="ApiVault.Views.SignUpView">
 
 	<!--Parent Stack-->
-	<Panel Background="#1B1D22">
+	<Panel Background="{StaticResource WindowBg}">
 		<Border
 			Background="#272A31"
 					Height="550"
@@ -35,6 +35,8 @@
 					HorizontalContentAlignment="Left"
 					Background="White"
 					SelectionBrush="#7B62FD"
+					CaretBrush="Black"
+					Foreground="Black"
 					/>
 
 				<TextBox
@@ -47,6 +49,8 @@
 					Margin="10,10,10,0"
 					Background="White"
 					SelectionBrush="#7B62FD"
+					CaretBrush="Black"
+					Foreground="Black"
 					/>
 
 				<TextBox
@@ -60,6 +64,8 @@
 					Margin="10,10,10,0"
 					Background="White"
 					SelectionBrush="#7B62FD"
+					CaretBrush="Black"
+					Foreground="Black"
 					/>
 
 				<TextBox
@@ -73,6 +79,8 @@
 					Margin="10,10,10,0"
 					Background="White"
 					SelectionBrush="#7B62FD"
+					CaretBrush="Black"
+					Foreground="Black"
 					/>
 
 				<!-- SignIn Btn -->

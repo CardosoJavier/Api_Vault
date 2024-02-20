@@ -13,8 +13,8 @@
 		OpenPaneLength="250"
 		CompactPaneLength="60"
 		DisplayMode="CompactInline"
-		Background="#1B1D22"
-		PaneBackground="#1B1D22"
+		Background="{StaticResource WindowBg}"
+		PaneBackground="{StaticResource WindowBg}"
 		>
 		<!-- Left-side navbar-->
 		<SplitView.Pane>
@@ -35,7 +35,6 @@
 							<StackPanel Spacing="15" Orientation="Horizontal">
 								<PathIcon Data="{Binding Icon}"/>
 								<TextBlock Text="{Binding Label}"></TextBlock>
-								
 							</StackPanel>
 						</DataTemplate>
 					</ListBox.ItemTemplate>

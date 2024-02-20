@@ -2,7 +2,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              x:Class="ApiVault.App"
              xmlns:local="using:ApiVault"
-             RequestedThemeVariant="Default">
+             RequestedThemeVariant="Dark">
              <!-- "Default" ThemeVariant follows system theme variant. "Dark" or "Light" are other available options. -->
 
     <Application.DataTemplates>
@@ -20,7 +20,6 @@
 		<!-- Override Universal Styles -->
 		<!-- https://github.com/AvaloniaUI/Avalonia/tree/master/src/Avalonia.Themes.Fluent/Controls -->
 		
-		
 		<!-- - - - - - - - - - - - - -  TextBox Styling - - - - - - - - - - - - -   -->
 		<!-- TextBox No-Focus -->
 		<Style Selector="TextBox /template/ Border#PART_BorderElement">
@@ -31,11 +30,25 @@
 		<Style Selector="TextBox:focus /template/ Border#PART_BorderElement">
 			<Setter Property="BorderThickness" Value="2" />
 			<Setter Property="BorderBrush" Value="#7B62FD" />
+			<Setter Property="Background" Value="White"/>
+			
 		</Style>
 
 		<!-- TextBox Hover -->
 		<Style Selector="TextBox:pointerover /template/ Border#PART_BorderElement">
 			<Setter Property="Background" Value="#DBD4FF"/>
+		</Style>
+
+		<Style Selector="TextBox /template/ TextBlock#PART_Watermark">
+			<Setter Property="Foreground" Value="Black" />
+		</Style>
+
+		<Style Selector="TextBox:pointerover /template/ TextBlock#PART_Watermark">
+			<Setter Property="Foreground" Value="Gray" />
+		</Style>
+
+		<Style Selector="TextBox /template/ TextBlock#PART_Watermark">
+			<Setter Property="Foreground" Value="Gray" />
 		</Style>
 
 		<!-- - - - - - - - - - - - - -  Button Styling - - - - - - - - - - - - -   -->
@@ -44,6 +57,13 @@
 			<Setter Property="Background" Value="#8E78FF"/>
 			<Setter Property="Foreground" Value="White"/>
 		</Style>
-		
     </Application.Styles>
+
+	<!-- - - - - - - - - - - - - -  Application Colors - - - - - - - - - - - - -   -->
+	<Application.Resources>
+		<!-- Background -->
+		<Color x:Key="WindowBg">#1c2222</Color>
+		<Color x:Key="ContentBg">#000000</Color>
+		<Color x:Key="PurpleContrast">#7B62FD</Color>
+	</Application.Resources>
 </Application>
