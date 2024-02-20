@@ -14,10 +14,10 @@
 		<!-- Default Style -->
         <FluentTheme />
 		
-		<!-- Icons -->
+		<!-- Icons location -->
 		<StyleInclude Source="avares://ApiVault/Assets/Icons.axaml"></StyleInclude>
 		
-		<!-- Override Universal Styles -->
+		<!-- Override Universal Styles Documentation -->
 		<!-- https://github.com/AvaloniaUI/Avalonia/tree/master/src/Avalonia.Themes.Fluent/Controls -->
 		
 		<!-- - - - - - - - - - - - - -  TextBox Styling - - - - - - - - - - - - -   -->
@@ -31,7 +31,6 @@
 			<Setter Property="BorderThickness" Value="2" />
 			<Setter Property="BorderBrush" Value="#7B62FD" />
 			<Setter Property="Background" Value="White"/>
-			
 		</Style>
 
 		<!-- TextBox Hover -->

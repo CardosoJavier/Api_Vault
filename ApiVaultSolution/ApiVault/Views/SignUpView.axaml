@@ -83,7 +83,7 @@
 					Foreground="Black"
 					/>
 
-				<!-- SignIn Btn -->
+				<!-- Sign up Btn -->
 				<Button
 					Background="#7B62FD"
 					Foreground="White"
@@ -99,7 +99,7 @@
 					Create Account
 				</Button>
 
-				<!-- Sign up -->
+				<!-- Sign in btn -->
 				<StackPanel
 					Orientation="Horizontal"
 					VerticalAlignment="Center"

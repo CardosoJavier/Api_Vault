@@ -1,4 +1,8 @@
+using ApiVault.ViewModels;
 using Avalonia.Controls;
+using Avalonia.Interactivity;
+using Avalonia.Metadata;
+using System;
 
 namespace ApiVault.Views
 {
@@ -7,6 +11,9 @@ namespace ApiVault.Views
         public DashboardPageView()
         {
             InitializeComponent();
+
+            // Bind view with corresponding ViewModel 
+            DataContext = new  DashboardPageViewModel();
         }
     }
 }

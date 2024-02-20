@@ -11,7 +11,7 @@ namespace ApiVault.Views
             InitializeComponent(); 
         }
 
-        // Navigate to sign up view
+        // Navigate to sign up view by reasingning main window content
         private void NavToSignUpView(object sender, RoutedEventArgs e)
         {
             if (this.Parent is Window mainWindow)
@@ -20,7 +20,7 @@ namespace ApiVault.Views
             }
         }
 
-        // Navigate to dashboard when login success
+        // Navigate to dashboard when login success by reasingning main window content
         private void NavToDashboard(object sender, RoutedEventArgs e)
         {
             if (this.Parent is Window mainWindow)

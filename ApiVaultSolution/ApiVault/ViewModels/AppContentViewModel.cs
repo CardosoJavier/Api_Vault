@@ -12,6 +12,7 @@ namespace ApiVault.ViewModels
     public partial class AppContentViewModel : ObservableObject
     {
         // Expand and hide left size navigation bar
+        // Navbar panel status tracket and method to update status
         [ObservableProperty]
         private bool _isPaneOpen;
 
@@ -22,10 +23,13 @@ namespace ApiVault.ViewModels
         }
 
         // Current display page
+        // The dashboard view is set as default current page after login
         [ObservableProperty]
         private ViewModelBase _currentPage = new DashboardPageViewModel();
 
-        // Define collection of navbar items
+        // Define collection of navbar items by adding the corresponding classes of each
+        // Navbar option into the Navbar list
+        // Second parameter are the icon identifiers defined in the App.axaml
         public ObservableCollection<ListItemTemplate> NavBarBtns { get; } = new()
         {
             new ListItemTemplate(typeof(DashboardPageViewModel), "home_regular"),
@@ -37,6 +41,8 @@ namespace ApiVault.ViewModels
         [ObservableProperty]
         private ListItemTemplate? _selectedNavOption;
 
+        // Based on selected navbar btn, it instantiates a new class of the
+        // selected view
         partial void OnSelectedNavOptionChanged(ListItemTemplate? value)
         {
             if (value is null) return;
@@ -47,6 +53,8 @@ namespace ApiVault.ViewModels
     }
 
     // Class to add navigation among navbar items
+    // It takes the ViewModel file name, removes "ViewModel" and uses the
+    // remaining as label
     public class ListItemTemplate
     {
         public string Label { get; }

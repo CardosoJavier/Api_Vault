@@ -10,7 +10,7 @@ namespace ApiVault.Views
             InitializeComponent();
         }
 
-        // Navigate to sign in
+        // Navigate to sign in by reasingning main window content
         public void NavToSignIn(object source, RoutedEventArgs args)
         {
             if (this.Parent is Window window)

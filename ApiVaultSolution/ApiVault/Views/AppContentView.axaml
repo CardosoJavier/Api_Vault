@@ -41,7 +41,6 @@
 				</ListBox>
 			</StackPanel>
 		</SplitView.Pane>
-
 		<!-- Screen content -->
 		<SplitView.Content>
 			<Border CornerRadius="40 0 0 0"

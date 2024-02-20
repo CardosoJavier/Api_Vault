@@ -24,7 +24,6 @@
 					HorizontalAlignment="Center"
 					VerticalAlignment="Top"
 					Margin="0,30,0,100"/>
-
 				<!-- Input fields -->
 				<TextBox
 					Name="usernameBox"
