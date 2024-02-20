@@ -24,6 +24,10 @@ Under the top bar, select Extensions -> Manage Extensions.
 2) Using Visual Studio, select the open project option, and select the "APIVaultSolution" folder.
 3) Once the project is opened, click the Build menu on the tool menu. Then, select "Build project"
 
-# Run Project
-If there are no build errors, click the green play icon to run the application. A pop-up window will appear showing the Login view.
-To stop the project, simply close the application window or click the stop button (red square) on Visual Studio.
+### Run Project
+1) If there are no build errors, click the green play icon to run the application. A pop-up window will appear showing the Login view.
+2) To stop the project, simply close the application window or click the stop button (red square) on Visual Studio.
+
+### Avalonia Documentation
+If standard installation is not working, consult to the official Avalonia documentation
+https://docs.avaloniaui.net/docs/welcome
