@@ -9,7 +9,7 @@
 	<Panel Background="{StaticResource WindowBg}">
 		<Border
 			Background="#272A31"
-					Height="550"
+					Height="590"
 					Width="400"
 					HorizontalAlignment="Center"
 					VerticalAlignment="Center"
@@ -27,6 +27,7 @@
 
 				<!-- Input fields -->
 				<TextBox
+					Name="Email"
 					Width="300"
 					Height="40"
 					Watermark="Email"
@@ -40,6 +41,7 @@
 					/>
 
 				<TextBox
+					Name="Username"
 					Width="300"
 					Height="40"
 					Watermark="Username"
@@ -54,6 +56,22 @@
 					/>
 
 				<TextBox
+					Name="Phone"
+					Width="300"
+					Height="40"
+					Watermark="Phone"
+					FontSize="18"
+					VerticalContentAlignment="Center"
+					HorizontalContentAlignment="Left"
+					Margin="10,10,10,0"
+					Background="White"
+					SelectionBrush="#7B62FD"
+					CaretBrush="Black"
+					Foreground="Black"
+					/>
+
+				<TextBox
+					Name="Password"
 					Width="300"
 					Height="40"
 					Watermark="Password"
@@ -69,6 +87,7 @@
 					/>
 
 				<TextBox
+					Name="ConfirmPassword"
 					Width="300"
 					Height="40"
 					Watermark="Confirm Password"
@@ -95,6 +114,7 @@
 					HorizontalContentAlignment="Center"
 					VerticalContentAlignment="Center"
 					Margin="10"
+					Click="CreateAccount"
 					>
 					Create Account
 				</Button>

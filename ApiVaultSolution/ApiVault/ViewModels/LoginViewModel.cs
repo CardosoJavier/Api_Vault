@@ -14,6 +14,8 @@ namespace ApiVault.ViewModels
         public IScreen HostScreen { get; }
         public string UrlPathSegment { get; } = "login";
 
+        // Database connection
+
         // Constructor
         public LoginViewModel(IScreen screen)
         {
