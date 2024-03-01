@@ -2,14 +2,23 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			 xmlns:vm="clr-namespace:ApiVault.ViewModels;assembly=ApiVault"
+			 xmlns:local="clr-namespace:ApiVault.Converters;assembly=ApiVault"
              mc:Ignorable="d" d:DesignWidth="1200" d:DesignHeight="900"
-             x:Class="ApiVault.Views.SignUpView">
+             x:Class="ApiVault.Views.SignUpView"
+			 x:DataType="vm:SignUpViewModel"
+			 >
+	
+	<UserControl.Resources>
+		<local:MessageToColor x:Key="MessageToColor"/>
+	</UserControl.Resources>
+
 
 	<!--Parent Stack-->
 	<Panel Background="{StaticResource WindowBg}">
 		<Border
 			Background="#272A31"
-					Height="590"
+					Height="605"
 					Width="400"
 					HorizontalAlignment="Center"
 					VerticalAlignment="Center"
@@ -38,6 +47,7 @@
 					SelectionBrush="#7B62FD"
 					CaretBrush="Black"
 					Foreground="Black"
+					Text="{Binding Email}"
 					/>
 
 				<TextBox
@@ -53,6 +63,7 @@
 					SelectionBrush="#7B62FD"
 					CaretBrush="Black"
 					Foreground="Black"
+					Text="{Binding Username}"
 					/>
 
 				<TextBox
@@ -68,6 +79,7 @@
 					SelectionBrush="#7B62FD"
 					CaretBrush="Black"
 					Foreground="Black"
+					Text="{Binding Phone}"
 					/>
 
 				<TextBox
@@ -84,6 +96,7 @@
 					SelectionBrush="#7B62FD"
 					CaretBrush="Black"
 					Foreground="Black"
+					Text="{Binding Password}"
 					/>
 
 				<TextBox
@@ -100,6 +113,7 @@
 					SelectionBrush="#7B62FD"
 					CaretBrush="Black"
 					Foreground="Black"
+					Text="{Binding ConfirmPassword}"
 					/>
 
 				<!-- Sign up Btn -->
@@ -114,23 +128,34 @@
 					HorizontalContentAlignment="Center"
 					VerticalContentAlignment="Center"
 					Margin="10"
-					Click="CreateAccount"
+					Command="{Binding SignUpCommand}"
 					>
 					Create Account
 				</Button>
+
+				<TextBlock
+					HorizontalAlignment="Center"
+					VerticalAlignment="Center"
+					Text="{Binding StatusMessage}"
+					Foreground="{Binding StatusMessage, Converter={StaticResource MessageToColor}}"
+					Margin="0 12 0 0"
+					FontSize="13"
+				/>
 
 				<!-- Sign in btn -->
 				<StackPanel
 					Orientation="Horizontal"
 					VerticalAlignment="Center"
 					HorizontalAlignment="Center"
-					Margin="0,50,0,0">
+					Margin="0,40,0,0">
+					
 					<TextBlock
 						Text="Have an account already?"
 						TextAlignment="Center"
 						Foreground="White"
 						Margin="10"
 						/>
+					
 					<Button
 						Background="#7B62FD"
 						Foreground="White"
