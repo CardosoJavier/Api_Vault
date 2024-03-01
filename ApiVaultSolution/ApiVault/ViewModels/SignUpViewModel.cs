@@ -1,7 +1,9 @@
 ﻿using ApiVault.DataModels;
 using ReactiveUI;
+using System;
 using System.Diagnostics;
 using System.Reactive;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace ApiVault.ViewModels
@@ -49,19 +51,37 @@ namespace ApiVault.ViewModels
          */
         private async Task SignUp()
         {
+            // Check for empty fields
             if (string.IsNullOrEmpty(Email) || string.IsNullOrEmpty(Username) ||
                 string.IsNullOrEmpty(Password) || string.IsNullOrEmpty(ConfirmPassword) ||
                 string.IsNullOrEmpty(Phone))
             {
-                StatusMessage = "One or more fields are empty/null";
-                Debug.Print("One or more fields are empty/null");
+                StatusMessage = "One or more fields are empty";
+                Debug.Print("One or more fields are empty");
                 return;
             }
 
+            // Check for matching passwords
             else if (Password != ConfirmPassword)
             {
                 StatusMessage = "Passwords are not the same";
                 Debug.Print("Passwords are not the same");
+                return;
+            }
+
+            // Check for special characters and numbers in passwords
+            else if (!IsValidPassword(Password))
+            {
+                StatusMessage = "Password needs at least one number and special character";
+                Debug.Print("Password needs at least one number and special characters");
+                return;
+            }
+
+            // Check if password has right length ( 8 > 0)
+            else if (Password.Length < 8)
+            {
+                StatusMessage = "Password must have at least 8 characters";
+                Debug.Print("Password must have at least 8 characters");
                 return;
             }
 
@@ -74,6 +94,11 @@ namespace ApiVault.ViewModels
                     // Navigate to sign in or update UI accordingly
                     StatusMessage = "User created successfully";
                     Debug.Print("User created successfully");
+
+                    Email = String.Empty;
+                    Username = String.Empty;
+                    Password = String.Empty;
+
                 }
                 else
                 {
@@ -110,6 +135,18 @@ namespace ApiVault.ViewModels
                 // TODO: Handle not successfull insert
                 return false;
             }
+        }
+
+        // Check if password has special characters and numbers
+        public bool IsValidPassword(string password)
+        {
+            // Check for a number
+            var hasNumber = new Regex(@"[0-9]+");
+
+            // Check for a special character
+            var hasSpecialChar = new Regex(@"[!@#$%^&*()_+<>?]+");
+
+            return hasNumber.IsMatch(password) && hasSpecialChar.IsMatch(password);
         }
     }
 }
