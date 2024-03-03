@@ -1,4 +1,5 @@
-﻿using Avalonia;
+﻿using ApiVault.DataModels;
+using Avalonia;
 using Avalonia.ReactiveUI;
 using System;
 

@@ -1,3 +1,4 @@
+using ApiVault.DataModels;
 using ApiVault.ViewModels;
 using ApiVault.Views;
 using Avalonia;
@@ -22,6 +23,9 @@ namespace ApiVault
                     DataContext = new MainWindowViewModel(),
                 };
             }
+
+            // Connect to database before launching application
+            AstraDbConnection.Connect();
 
             base.OnFrameworkInitializationCompleted();
         }
