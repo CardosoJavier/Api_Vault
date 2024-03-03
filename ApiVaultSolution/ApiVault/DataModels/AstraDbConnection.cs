@@ -1,11 +1,12 @@
 ﻿using Cassandra;
-using System.Diagnostics;
 using System.Threading.Tasks;
 using System;
+using Avalonia.Controls.Documents;
+using System.Diagnostics;
 
 namespace ApiVault.DataModels
 {
-    internal class AstraDbConnection
+    public class AstraDbConnection
     {
         // Session pooling
         private static Cluster? cluster;
@@ -14,44 +15,33 @@ namespace ApiVault.DataModels
         /*
          * Stablish connection with API Vault database
          */
-        public static async Task Connect()
+        public async Task InitializeConnection()
         {
-            if (session != null && !session.IsDisposed) 
+            // New pooling options
+            var poolingOptions = new PoolingOptions()
+                    .SetCoreConnectionsPerHost(HostDistance.Local, 2)  // Set minimum number of connections for local hosts
+                    .SetMaxConnectionsPerHost(HostDistance.Local, 10)  // Set maximum number of connections for local hosts
+                    .SetCoreConnectionsPerHost(HostDistance.Remote, 1) // Set minimum number of connections for remote hosts
+                    .SetMaxConnectionsPerHost(HostDistance.Remote, 5); // Set maximum number of connections for remote hosts
+
+            // Init cluster
+             cluster = await Task.Run(() =>
             {
-                return;
-            }
+                 return Cluster.Builder()
+                .WithCloudSecureConnectionBundle("secure-connect-apivault.zip")
+                .WithCredentials(Environment.GetEnvironmentVariable("CLIENT"), Environment.GetEnvironmentVariable("SECRET"))
+                .WithPoolingOptions(poolingOptions)
+                .Build();
+            });
 
-            else
-            {
-                await Task.Run(() =>
-                {
-
-                    var watch = System.Diagnostics.Stopwatch.StartNew();
-
-                    var clusterWatch = System.Diagnostics.Stopwatch.StartNew();
-                    cluster = Cluster.Builder()
-                        .WithCloudSecureConnectionBundle("secure-connect-apivault.zip")
-                        .WithCredentials(Environment.GetEnvironmentVariable("CLIENT"), Environment.GetEnvironmentVariable("SECRET"))
-                        .Build();
-
-                    clusterWatch.Stop();
-                    Debug.Print($"GetCredentials(): {clusterWatch.ElapsedMilliseconds} ms");
-
-
-                    session = cluster.Connect("apivault_space");
-                    watch.Stop();
-                    Debug.Print($"Cluster and session: {watch.ElapsedMilliseconds} ms");
-                });
-            }
+            Debug.Print("InitializeConnection Finished");
         }
 
-        public static async Task<ISession> GetSession() 
+        public async Task<ISession> GetSession() 
         {
-            if (session == null || session.IsDisposed) 
+            if (session == null || session.IsDisposed)
             {
-                await Connect();
-
-                return session;
+                session = await cluster.ConnectAsync("apivault_space");
             }
 
             return session;

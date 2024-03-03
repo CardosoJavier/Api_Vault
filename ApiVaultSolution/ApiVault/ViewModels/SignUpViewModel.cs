@@ -21,11 +21,66 @@ namespace ApiVault.ViewModels
         private static readonly Regex hasSpecialChar = new Regex(@"[!@#$%^&*()_+<>?]+", RegexOptions.Compiled);
 
         // New user variables for Data Binding
-        public string Username { get; set; }
-        public string Email { get; set; }
-        public string Password { get; set; }
-        public string ConfirmPassword { get; set; }
-        public string Phone { get; set; }
+        private string username;
+        public string Username
+        {  get => username;
+            set
+            {
+                this.RaiseAndSetIfChanged(ref username, value);
+                UpdateCanSubmit();
+            }
+        }
+
+        private string email;
+        public string Email 
+        {
+            get => email;
+            set
+            {
+                this.RaiseAndSetIfChanged(ref email, value);
+                UpdateCanSubmit();
+            }
+
+        }
+
+        private string password;
+        public string Password
+        {
+            get => password;
+            set
+            {
+                this.RaiseAndSetIfChanged(ref password, value);
+                UpdateCanSubmit();
+            }
+        }
+
+        private string confirmpassword;
+        public string ConfirmPassword
+        {
+            get => confirmpassword;
+            set
+            { 
+                this.RaiseAndSetIfChanged(ref confirmpassword, value); 
+                UpdateCanSubmit(); 
+            }
+        }
+
+        private string phone;
+        public string Phone 
+        {
+            get => phone;
+            set 
+            { 
+                this.RaiseAndSetIfChanged(ref phone, value);
+                UpdateCanSubmit(); 
+            }
+        }
+
+        public bool CanSubmit { get; set; } = false;
+
+        // Database variables
+        private AstraDbConnection dbConnection;
+        private ISession session;
 
         // public string StatusMessage { get; set; }
         private string statusMessage;
@@ -40,9 +95,12 @@ namespace ApiVault.ViewModels
         public ReactiveCommand<Unit, Unit> SignUpCommand { get; }
 
         /* - - - - - - - - - - - Constructors - - - - - - - - - - - */
+        
         public SignUpViewModel()
         {
             SignUpCommand = ReactiveCommand.CreateFromTask(SignUp);
+            dbConnection = new AstraDbConnection();
+            InitializeAsync();
         }
 
         public SignUpViewModel(IScreen screen)
@@ -52,18 +110,25 @@ namespace ApiVault.ViewModels
 
         /* - - - - - - - - - - - Methods - - - - - - - - - - - */
 
+        public async Task InitializeAsync()
+        {
+
+            await dbConnection.InitializeConnection();
+            session = await dbConnection.GetSession();
+        }
+
         /*
          * Create new user account
          */
         private async Task SignUp()
         {
             var watch = System.Diagnostics.Stopwatch.StartNew();
-
+            var session = dbConnection.GetSession().Result;
             try
             {
                 // database connection
                 var watchDb = System.Diagnostics.Stopwatch.StartNew();
-                var session = AstraDbConnection.GetSession().Result;
+                // var session = AstraDbConnection.GetSession().Result;
                 watchDb.Stop();
                 Debug.Print($"Connect to DB: {watchDb.ElapsedMilliseconds} ms");
 
@@ -213,6 +278,18 @@ namespace ApiVault.ViewModels
             });
 
             return await reponse;
+        }
+
+        // Enables user to submit once all form fields are filled
+        private void UpdateCanSubmit()
+        {
+            CanSubmit = !string.IsNullOrWhiteSpace(Username)
+                        && !string.IsNullOrWhiteSpace(Email)
+                        && !string.IsNullOrWhiteSpace(Password)
+                        && !string.IsNullOrWhiteSpace(ConfirmPassword)
+                        && !string.IsNullOrWhiteSpace(Phone);
+
+            this.RaisePropertyChanged(nameof(CanSubmit));
         }
     }
 }

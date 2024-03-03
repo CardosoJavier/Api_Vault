@@ -25,7 +25,7 @@ namespace ApiVault
             }
 
             // Connect to database before launching application
-            AstraDbConnection.Connect();
+            // AstraDbConnection.Connect();
 
             base.OnFrameworkInitializationCompleted();
         }

@@ -118,6 +118,8 @@
 
 				<!-- Sign up Btn -->
 				<Button
+					Name="signBtn"
+					IsEnabled="{Binding CanSubmit}"
 					Background="#7B62FD"
 					Foreground="White"
 					Width="200"
