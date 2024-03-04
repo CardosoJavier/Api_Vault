@@ -48,7 +48,7 @@ namespace ApiVault.DataModels
         }
 
         // Dispose Connection
-        public static void DisposeDb()
+        public void DisposeDb()
         {
             if (session != null)
             {

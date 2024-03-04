@@ -1,3 +1,4 @@
+using ApiVault.ViewModels;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 
@@ -8,7 +9,8 @@ namespace ApiVault.Views
         // Constructor to initialize view component
         public LoginView()
         {
-            InitializeComponent(); 
+            InitializeComponent();
+            DataContext = new LoginViewModel();
         }
 
         // Navigate to sign up view by reasingning main window content

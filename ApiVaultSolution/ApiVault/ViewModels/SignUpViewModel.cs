@@ -108,6 +108,11 @@ namespace ApiVault.ViewModels
             HostScreen = screen;
         }
 
+        ~SignUpViewModel()
+        {
+            Debug.Print("Connection Ended!");
+            dbConnection.DisposeDb();
+        }
         /* - - - - - - - - - - - Methods - - - - - - - - - - - */
 
         public async Task InitializeAsync()
@@ -139,6 +144,13 @@ namespace ApiVault.ViewModels
                     var success = await InsertUser(Email, Username, Password, Phone, session);
                     if (success)
                     {
+                        // TODO: Clear fields after successfull sign up
+                        Email = string.Empty;
+                        Username = string.Empty;
+                        Password = string.Empty;
+                        ConfirmPassword = string.Empty;
+                        Phone = string.Empty;
+
                         // Navigate to sign in or update UI accordingly
                         StatusMessage = "User created successfully";
                         Debug.Print("User created successfully");
@@ -178,8 +190,6 @@ namespace ApiVault.ViewModels
                 // Add new user query
                 var inserteUser = session.Prepare("INSERT INTO apivault_space.Users (username, email, password, phone) VALUES (?, ?, ?, ?)");
                 session.Execute(inserteUser.Bind(username, email, hashedPassword, phone));
-
-                // TODO: Clear fields after successfull sign up
 
                 // TODO: Verify user was inserted in table correctly
                 var veryfyUserQuery = session.Prepare("SELECT * FROM apivault_space.Users WHERE username = ?");
@@ -254,6 +264,10 @@ namespace ApiVault.ViewModels
                 Debug.Print("Password must have at least 8 characters");
                 return false;
             }
+
+            // TODO: Check phone number formart
+
+            // TODO: Check email format
 
             return true;
         }

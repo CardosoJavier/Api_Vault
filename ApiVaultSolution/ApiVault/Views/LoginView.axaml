@@ -2,8 +2,11 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="650"
-             x:Class="ApiVault.Views.LoginView">
+			 xmlns:vm="clr-namespace:ApiVault.ViewModels;assembly=ApiVault"
+			 mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="650"
+             x:Class="ApiVault.Views.LoginView"
+			 x:DataType="vm:LoginViewModel"
+			 >
 
 	<!--Parent Stack-->
 	<Panel Background="{StaticResource WindowBg}">
@@ -58,6 +61,7 @@
 				<!-- SignIn Btn -->
 				<Button
 					Name="SignInBtn"
+					IsEnabled="{Binding CanSubmit}"
 					Background="#7B62FD"
 					Foreground="White"
 					Width="100"
