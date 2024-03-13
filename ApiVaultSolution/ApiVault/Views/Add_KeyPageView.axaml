@@ -1,0 +1,59 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="1200" d:DesignHeight="800"
+             x:Class="ApiVault.Views.Add_KeyPageView">
+	<Border
+		  BorderBrush="#7B62FD"
+		  BorderThickness="2"
+		  CornerRadius="25"
+		  Margin="80">
+		<StackPanel
+			Orientation="Vertical"
+			Background="Transparent"
+			Margin="30">
+			<!-- Title -->
+			<TextBlock HorizontalAlignment="Center" Text="Add Api Key" FontSize="26"/>
+			<!-- Api key description -->
+			<StackPanel>
+				<TextBlock Margin="0 0 0 10" Text="Api Key Name"/>
+				<TextBox CaretBrush="Black" Background="White" Foreground="Black"/>
+			</StackPanel>
+			<!-- Api key -->
+			<StackPanel Margin="0 35 0 0">
+				<TextBlock Margin="0 0 0 10" Text="Api Key"/>
+				<TextBox CaretBrush="Black" Background="White" Foreground="Black"/>
+			</StackPanel>
+			<!-- Group settings -->
+			<Grid Margin="0 80 0 0" ColumnDefinitions="*,*,*" RowDefinitions="Auto" HorizontalAlignment="Center" VerticalAlignment="Center">
+				<!-- Select existing group -->
+				<StackPanel Grid.Column="0" Margin="40 0">
+					<TextBlock Text="Select Api Group"/>
+					<ComboBox Width="150">
+						<ComboBoxItem> Group 1</ComboBoxItem>
+						<ComboBoxItem> Group 2</ComboBoxItem>
+						<ComboBoxItem> Group 3</ComboBoxItem>
+					</ComboBox>
+				</StackPanel>
+				<!-- Divider-->
+				<StackPanel Grid.Column="1" VerticalAlignment="Center">
+					<TextBlock Text="- or -"/>
+				</StackPanel>
+				<!-- Create new group -->
+				<StackPanel Grid.Column="2" Margin="40 0">
+					<TextBlock Text="Create New Group"/>
+					<TextBox CaretBrush="Black" Width="150" Foreground="Black"/>
+				</StackPanel>
+			</Grid>
+			<!-- Submit btn -->
+			<Button Width="150"
+					Margin="0 50 0 0"
+					VerticalAlignment="Center"
+					HorizontalAlignment="Center"
+					Background="#7B62FD">
+				<TextBlock Text="Save key" HorizontalAlignment="Center"/>
+			</Button>
+		</StackPanel>
+	</Border>
+</UserControl>

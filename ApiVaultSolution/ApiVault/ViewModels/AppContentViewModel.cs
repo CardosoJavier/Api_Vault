@@ -34,6 +34,7 @@ namespace ApiVault.ViewModels
         {
             new ListItemTemplate(typeof(DashboardPageViewModel), "home_regular"),
             new ListItemTemplate(typeof(GroupsPageViewModel), "group_regular"),
+            new ListItemTemplate(typeof(Add_KeyPageViewModel), "add_square_regular")
         };
 
         // Keeps track of selected navbar btn
@@ -63,7 +64,7 @@ namespace ApiVault.ViewModels
         public ListItemTemplate(Type type, string iconKey)
         {
             ModelType = type;
-            Label = type.Name.Replace("PageViewModel", "");
+            Label = type.Name.Replace("PageViewModel", "").Replace("_"," ");
             Application.Current.TryFindResource(iconKey, out var navIcon);
             Icon = (StreamGeometry)navIcon!;
         }
