@@ -1,4 +1,5 @@
 ﻿using ApiVault.DataModels;
+using ApiVault.Services;
 using Cassandra;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using ReactiveUI;
@@ -17,7 +18,6 @@ namespace ApiVault.ViewModels
         // Sets the view identifier to "login"
         public IScreen? HostScreen { get; }
         public string? UrlPathSegment { get; } = "login";
-
 
         /* - - - - - - - - - - Binding View Variables - - - - - - - - - - */
         private string? username;
@@ -53,6 +53,8 @@ namespace ApiVault.ViewModels
         private AstraDbConnection dbConnection;
         private ISession InitPoolSession;
 
+        public event EventHandler? LoginSuccessful;
+
         /* - - - - - - - - - - Constructors - - - - - - - - - - */
         public LoginViewModel(IScreen screen)
         {
@@ -66,11 +68,6 @@ namespace ApiVault.ViewModels
             dbConnection = new AstraDbConnection();
             InitializeAsync();
 
-        }
-
-        ~LoginViewModel()
-        {
-            dbConnection.DisposeDb();
         }
 
         /* - - - - - - - - - - - Commands - - - - - - - - - - - */
@@ -90,24 +87,21 @@ namespace ApiVault.ViewModels
         // Function that checks credentials
         private async Task Login()
         {
-            // get session form pool session
-            var session = dbConnection.GetSession().Result;
-
             // check if credentials are valid
-            bool validCredentials = await verifyCredentials(Username, Password, session);
+            bool validCredentials = await verifyCredentials(Username, Password);
 
             // move to dashboard or display error message
             if (validCredentials)
             {
                 Debug.Print("Access granted");
-                return;
+                OnLoginSuccess();
             }
 
             StatusMessage = "Wrong username or password";
         }
 
         // verify credentials
-        private async Task<bool> verifyCredentials(string username, string password, ISession session)
+        private async Task<bool> verifyCredentials(string username, string password)
         {
             if (string.IsNullOrEmpty(username))
             {
@@ -121,11 +115,11 @@ namespace ApiVault.ViewModels
 
             // Prepare the query
             var query = "SELECT password FROM users WHERE username = ?";
-            var prepareStatement = await session.PrepareAsync(query).ConfigureAwait(false);
+            var prepareStatement = await InitPoolSession.PrepareAsync(query).ConfigureAwait(false);
             var bindStatement = prepareStatement.Bind(username);
 
             // execute query
-            var exeQuery = await session.ExecuteAsync(bindStatement);
+            var exeQuery = await InitPoolSession.ExecuteAsync(bindStatement);
 
             // get first row from returning set
             var rowData =  exeQuery.FirstOrDefault();
@@ -152,5 +146,12 @@ namespace ApiVault.ViewModels
 
             this.RaisePropertyChanged(nameof(CanSubmit));
         }
+
+        // login event
+        public void OnLoginSuccess()
+        {
+            LoginSuccessful?.Invoke(this, EventArgs.Empty);
+        }
+
     }
 }

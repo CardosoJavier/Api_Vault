@@ -131,7 +131,6 @@ namespace ApiVault.ViewModels
         private async Task SignUp()
         {
             var watch = System.Diagnostics.Stopwatch.StartNew();
-            var session = dbConnection.GetSession().Result;
             try
             {
                 // database connection
@@ -141,10 +140,10 @@ namespace ApiVault.ViewModels
                 Debug.Print($"Connect to DB: {watchDb.ElapsedMilliseconds} ms");
 
                 // Check for empty fields
-                if (await verifyInput(Email, Username, Password, ConfirmPassword, Phone, session))
+                if (await verifyInput(Email, Username, Password, ConfirmPassword, Phone))
                 {
                     // Insert user logic here
-                    var success = await InsertUser(Email, Username, Password, Phone, session);
+                    var success = await InsertUser(Email, Username, Password, Phone);
                     if (success)
                     {
                         // TODO: Clear fields after successfull sign up
@@ -182,7 +181,7 @@ namespace ApiVault.ViewModels
         /*
          * Insert new user in the database
          */
-        private static async Task<bool> InsertUser(string email, string username, string password, string phone, ISession session)
+        private async Task<bool> InsertUser(string email, string username, string password, string phone)
         {
             var watch = System.Diagnostics.Stopwatch.StartNew();
             try
@@ -191,12 +190,12 @@ namespace ApiVault.ViewModels
                 var hashedPassword = BCrypt.Net.BCrypt.HashPassword(password);
 
                 // Add new user query
-                var inserteUser = session.Prepare("INSERT INTO apivault_space.Users (username, email, password, phone) VALUES (?, ?, ?, ?)");
-                session.Execute(inserteUser.Bind(username, email, hashedPassword, phone));
+                var inserteUser = InitPoolSession.Prepare("INSERT INTO apivault_space.Users (username, email, password, phone) VALUES (?, ?, ?, ?)");
+                InitPoolSession.Execute(inserteUser.Bind(username, email, hashedPassword, phone));
 
                 // TODO: Verify user was inserted in table correctly
-                var veryfyUserQuery = session.Prepare("SELECT * FROM apivault_space.Users WHERE username = ?");
-                var checkNewUser = session.Execute(veryfyUserQuery.Bind(username));
+                var veryfyUserQuery = InitPoolSession.Prepare("SELECT * FROM apivault_space.Users WHERE username = ?");
+                var checkNewUser = InitPoolSession.Execute(veryfyUserQuery.Bind(username));
 
                 watch.Stop();
                 var timePassed = watch.ElapsedMilliseconds;
@@ -216,7 +215,7 @@ namespace ApiVault.ViewModels
         }
 
         // verify username, email, phone number, and password
-        private async Task<bool> verifyInput(string Email, string Username, string Password, string ConfirmPassword, string Phone, ISession session)
+        private async Task<bool> verifyInput(string Email, string Username, string Password, string ConfirmPassword, string Phone)
         {
             // Check for empty fields
             if (string.IsNullOrEmpty(Email) || string.IsNullOrEmpty(Username) ||
@@ -237,7 +236,7 @@ namespace ApiVault.ViewModels
             }
 
             // check username availability
-            if (await checkUsernameAvailability(Username, session))
+            if (await checkUsernameAvailability(Username, InitPoolSession))
             {
                 StatusMessage = Username + " is already taken";
                 Debug.Print("Username + \" is already taken\"");

@@ -10,9 +10,21 @@ namespace ApiVault.Views
         public LoginView()
         {
             InitializeComponent();
-            DataContext = new LoginViewModel();
+            var loginViewModel = new LoginViewModel();
+            DataContext = loginViewModel;
+
+            loginViewModel.LoginSuccessful += (sender, e) => NavToDashboard();
         }
 
+        private void NavToDashboard()
+        {
+            if (this.Parent is Window mainWindow)
+            {
+                mainWindow.Content = new AppContentView(); // Ensure you have a DashboardView defined
+            }
+        }
+
+        
         // Navigate to sign up view by reasingning main window content
         private void NavToSignUpView(object sender, RoutedEventArgs e)
         {
@@ -22,6 +34,7 @@ namespace ApiVault.Views
             }
         }
 
+        /*
         // Navigate to dashboard when login success by reasingning main window content
         private void NavToDashboard(object sender, RoutedEventArgs e)
         {
@@ -30,5 +43,6 @@ namespace ApiVault.Views
                 mainWindow.Content = new AppContentView();
             }
         }
+        */
     }
 }

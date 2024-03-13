@@ -1,4 +1,5 @@
 using ApiVault.DataModels;
+using ApiVault.Services;
 using ApiVault.ViewModels;
 using ApiVault.Views;
 using Avalonia;
@@ -13,7 +14,6 @@ namespace ApiVault
         {
             AvaloniaXamlLoader.Load(this);
         }
-
         public override void OnFrameworkInitializationCompleted()
         {
             if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
