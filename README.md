@@ -22,7 +22,7 @@ Under the top bar, select Extensions -> Manage Extensions.
 ### Access and Build Project
 1) Clone the project in the machine
 2) Using Visual Studio, select the open project option, and select the "APIVaultSolution" folder.
-3) Once the project is opened, click the Build menu on the tool menu. Then, select "Build project"
+3) Once the project is opened, click the Build menu on the tool menu. Then, select "Build Solution"
 
 ### Run Project
 1) If there are no build errors, click the green play icon to run the application. A pop-up window will appear showing the Login view.
