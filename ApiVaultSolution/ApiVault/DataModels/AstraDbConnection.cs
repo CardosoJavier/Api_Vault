@@ -24,16 +24,24 @@ namespace ApiVault.DataModels
                     .SetMaxConnectionsPerHost(HostDistance.Remote, 5); // Set maximum number of connections for remote hosts
 
             // Init cluster
-             cluster = await Task.Run(() =>
+             try
             {
-                 return Cluster.Builder()
-                .WithCloudSecureConnectionBundle("secure-connect-apivault.zip")
-                .WithCredentials(Environment.GetEnvironmentVariable("CLIENT"), Environment.GetEnvironmentVariable("SECRET"))
-                .WithPoolingOptions(poolingOptions)
-                .Build();
-            });
+                cluster = await Task.Run(() =>
+                {
+                    return Cluster.Builder()
+                   .WithCloudSecureConnectionBundle("secure-connect-apivault.zip")
+                   .WithCredentials(Environment.GetEnvironmentVariable("CLIENT"), Environment.GetEnvironmentVariable("SECRET"))
+                   .WithPoolingOptions(poolingOptions)
+                   .Build();
+                });
 
-            Debug.Print("Initialize Connection Finished");
+                Debug.Print("Initialize Connection Finished");
+            }
+
+            catch (Exception ex) 
+            {
+                Debug.Print("Db Connection error");
+            }
         }
 
         public async Task<ISession> GetSession() 
