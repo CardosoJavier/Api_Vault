@@ -30,7 +30,11 @@
 		<Style Selector="TextBox:focus /template/ Border#PART_BorderElement">
 			<Setter Property="BorderThickness" Value="2" />
 			<Setter Property="BorderBrush" Value="#7B62FD" />
-			<Setter Property="Background" Value="White"/>
+			<Setter Property="Background" Value="#DBD4FF"/>
+		</Style>
+
+		<Style Selector="TextBox:focus /template/ TextBlock#PART_Watermark">
+			<Setter Property="Foreground" Value="Gray" />
 		</Style>
 
 		<!-- TextBox Hover -->
@@ -55,6 +59,18 @@
 		<Style Selector="Button:pointerover /template/ ContentPresenter#PART_ContentPresenter">
 			<Setter Property="Background" Value="#8E78FF"/>
 			<Setter Property="Foreground" Value="White"/>
+		</Style>
+
+		<!-- - - - - - - - - - - - - - List Box Styling - - - - - - - - - - - - -   -->
+		<!-- Box List -->
+		<Style Selector="ListBoxItem:selected /template/ ContentPresenter#PART_ContentPresenter">
+			<Setter Property="Background" Value="#7B62FD" />
+			<Setter Property="Foreground" Value="White" />
+		</Style>
+
+		<!-- - - - - - - - - - - - - - Combo Box Styling - - - - - - - - - - - - -   -->
+		<Style Selector="ComboBoxItem:selected /template/ ContentPresenter">
+			<Setter Property="Background" Value="#7B62FD"/>
 		</Style>
     </Application.Styles>
 

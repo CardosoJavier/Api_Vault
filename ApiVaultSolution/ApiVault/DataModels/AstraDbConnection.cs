@@ -1,7 +1,6 @@
 ﻿using Cassandra;
 using System.Threading.Tasks;
 using System;
-using Avalonia.Controls.Documents;
 using System.Diagnostics;
 
 namespace ApiVault.DataModels
@@ -41,7 +40,7 @@ namespace ApiVault.DataModels
         {
             if (session == null || session.IsDisposed)
             {
-                session = await cluster.ConnectAsync("apivault_space");
+                session = await cluster.ConnectAsync(Environment.GetEnvironmentVariable("CLUSTER"));
             }
 
             return session;

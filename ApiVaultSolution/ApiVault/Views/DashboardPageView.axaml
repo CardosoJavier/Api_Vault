@@ -2,13 +2,47 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+			 xmlns:local="using:ApiVault.Views"
+			 xmlns:ic="using:FluentIcons.Avalonia"
+             mc:Ignorable="d" d:DesignWidth="1400" d:DesignHeight="800"
 			 xmlns:vm="using:ApiVault.ViewModels"
              x:Class="ApiVault.Views.DashboardPageView">
 
-	<StackPanel Margin="10 20">
-		<!-- View Placeholder -->
-		<TextBlock Background="#000000" Text="Dashboard"></TextBlock>
-	</StackPanel>
+	<Panel Margin="15">
+		<!-- Search and filter tools -->
+		<Grid ColumnDefinitions="*,*,*" RowDefinitions="Auto" Margin="4">
+			<!-- Sort by -->
+			<StackPanel Orientation="Horizontal" Grid.Column="0">
+				<TextBlock Text="Sort by: " FontSize="18" VerticalAlignment="Center" Margin="10 0"/>
+				<ComboBox SelectedIndex="0" VerticalAlignment="Center" FontSize="16">
+					<ComboBoxItem>Description</ComboBoxItem>
+					<ComboBoxItem>Group</ComboBoxItem>
+					<ComboBoxItem>Newest</ComboBoxItem>
+					<ComboBoxItem>Oldest</ComboBoxItem>
+				</ComboBox>
+			</StackPanel>
+
+			<!-- Filter by -->
+			<StackPanel Orientation="Horizontal" Grid.Column="1">
+				<TextBlock Text="Filter by:" FontSize="18" VerticalAlignment="Center" Margin="10 0"/>
+				<ComboBox SelectedIndex="0" VerticalAlignment="Center" FontSize="16">
+					<ComboBoxItem>Group</ComboBoxItem>
+				</ComboBox>
+			</StackPanel>
+
+			<!-- search bar -->
+			<TextBox Grid.Column="2" 
+					 Watermark="Search Api key"
+					 Foreground="Black"
+					 CaretBrush="Black"
+					 FontSize="18"/>
+		</Grid>
+		
+		<!-- Api Key panels -->
+		<StackPanel Margin="10 20">
+			<!-- View Placeholder -->
+			<local:ApiKeyView/>
+		</StackPanel>
+	</Panel>
 
 </UserControl>

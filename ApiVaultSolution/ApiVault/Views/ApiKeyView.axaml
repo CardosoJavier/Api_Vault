@@ -1,0 +1,87 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			 xmlns:ic="using:FluentIcons.Avalonia"
+             mc:Ignorable="d" d:DesignWidth="1500" d:DesignHeight="800"
+             x:Class="ApiVault.Views.ApiKeyView">
+	<!-- Border -->
+	<StackPanel
+			Orientation="Vertical"
+			Background="Transparent"
+			Margin="50">
+		<!-- Top -->
+		<Border
+			CornerRadius="15 0"
+			Background="#272A36">
+			<DockPanel
+			LastChildFill="True"
+			Height="40"
+			>
+				<!-- Name -->
+				<TextBlock
+					DockPanel.Dock="Left"
+					VerticalAlignment="Center"
+					Margin="40 0 0 0"
+					FontSize="20"
+					Text="Description"/>
+				<!-- Group -->
+				<TextBlock
+					HorizontalAlignment="Right"
+					VerticalAlignment="Center"
+					Margin="0 0 90 0"
+					FontSize="20"
+					Text="Group"/>
+			</DockPanel>
+		</Border>
+		<!-- Content -->
+		<DockPanel
+			Background="#1A1C24"
+			Height="60"
+			LastChildFill="False">
+			<!-- Api key -->
+			<TextBlock
+				DockPanel.Dock="Left"
+				Margin="10 0 0 0"
+				VerticalAlignment="Center"
+				FontSize="25"
+				Text="**************************************05ca8181"/>
+			<!-- buttons -->
+			<StackPanel
+				DockPanel.Dock="Right"
+				Orientation="Horizontal"
+				Margin="0 0 65 0">
+				<Button
+					HorizontalAlignment="Right"
+					Height="40"
+					Width="40"
+					Margin="5"
+					Background="#1A1C24">
+					<ic:SymbolIcon Symbol="Eye" IsFilled="False" FontSize="35"/>
+				</Button>
+
+				<Button
+					Height="50"
+					Width="50"
+					Background="#1A1C24">
+					<ic:SymbolIcon Symbol="Clipboard" IsFilled="False" FontSize="35"/>
+				</Button>
+			</StackPanel>
+		</DockPanel>
+		<!-- Detais -->
+		<Border
+			CornerRadius="0 15"
+			Background="#1A1C24">
+			<DockPanel
+			Height="20">
+				<TextBlock
+					Foreground="#ACACAC"
+					FontSize="10"
+					HorizontalAlignment="Center"
+					VerticalAlignment="Center"
+					Text="Created x days ago"
+				/>
+			</DockPanel>
+		</Border>
+	</StackPanel>
+</UserControl>

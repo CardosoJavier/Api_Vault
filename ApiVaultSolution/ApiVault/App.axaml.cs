@@ -1,5 +1,3 @@
-using ApiVault.DataModels;
-using ApiVault.Services;
 using ApiVault.ViewModels;
 using ApiVault.Views;
 using Avalonia;

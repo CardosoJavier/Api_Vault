@@ -11,7 +11,7 @@
 	<SplitView
 		IsPaneOpen="{Binding IsPaneOpen}"
 		OpenPaneLength="250"
-		CompactPaneLength="60"
+		CompactPaneLength="66"
 		DisplayMode="CompactInline"
 		Background="{StaticResource WindowBg}"
 		PaneBackground="{StaticResource WindowBg}"
@@ -39,8 +39,11 @@
 						</DataTemplate>
 					</ListBox.ItemTemplate>
 				</ListBox>
+				<!-- Logout button -->
+				
 			</StackPanel>
 		</SplitView.Pane>
+		
 		<!-- Screen content -->
 		<SplitView.Content>
 			<Border CornerRadius="40 0 0 0"

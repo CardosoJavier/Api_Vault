@@ -1,5 +1,4 @@
 ﻿using ApiVault.DataModels;
-using ApiVault.Services;
 using Cassandra;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using ReactiveUI;
@@ -97,7 +96,10 @@ namespace ApiVault.ViewModels
                 OnLoginSuccess();
             }
 
-            StatusMessage = "Wrong username or password";
+            else
+            {
+                StatusMessage = "Wrong username or password";
+            }
         }
 
         // verify credentials
