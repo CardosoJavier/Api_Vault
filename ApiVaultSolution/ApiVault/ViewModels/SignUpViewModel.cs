@@ -1,7 +1,9 @@
 ﻿using ApiVault.DataModels;
 using Cassandra;
 using ReactiveUI;
+using System;
 using System.Diagnostics;
+using System.Globalization;
 using System.Linq;
 using System.Reactive;
 using System.Text.RegularExpressions;
@@ -226,7 +228,7 @@ namespace ApiVault.ViewModels
             }
 
             // check username length 
-            else if (Username.Length < 4)
+            if (Username.Length < 4)
             {
                 StatusMessage = "Username must have at least 4 characters";
                 Debug.Print("Username must have at least 4 characters");
@@ -234,7 +236,7 @@ namespace ApiVault.ViewModels
             }
 
             // check username availability
-            else if (await checkUsernameAvailability(Username, session))
+            if (await checkUsernameAvailability(Username, session))
             {
                 StatusMessage = Username + " is already taken";
                 Debug.Print("Username + \" is already taken\"");
@@ -242,7 +244,7 @@ namespace ApiVault.ViewModels
             }
 
             // Check for matching passwords
-            else if (Password != ConfirmPassword)
+            if (Password != ConfirmPassword)
             {
                 StatusMessage = "Passwords are not the same";
                 Debug.Print("Passwords are not the same");
@@ -250,7 +252,7 @@ namespace ApiVault.ViewModels
             }
 
             // Check for special characters and numbers in passwords
-            else if (!IsValidPassword(Password))
+            if (!IsValidPassword(Password))
             {
                 StatusMessage = "Password needs at least one number and special character";
                 Debug.Print("Password needs at least one number and special characters");
@@ -258,7 +260,7 @@ namespace ApiVault.ViewModels
             }
 
             // Check if password has right length ( 8 > 0)
-            else if (Password.Length < 8)
+            if (Password.Length < 8)
             {
                 StatusMessage = "Password must have at least 8 characters";
                 Debug.Print("Password must have at least 8 characters");
@@ -266,8 +268,21 @@ namespace ApiVault.ViewModels
             }
 
             // TODO: Check phone number formart
+            if (Phone.Length < 7 ||  Phone.Length > 15) 
+            {
+                StatusMessage = "Invalid phone number";
+                Debug.Print("Invalid phone number");
+                return false;
+            }
 
             // TODO: Check email format
+            if (!IsValidEmail(Email))
+            {
+                StatusMessage = "Invalid email";
+                Debug.Print("Invalid email");
+                return false;
+            }
+            
 
             return true;
         }
@@ -292,6 +307,51 @@ namespace ApiVault.ViewModels
             });
 
             return await reponse;
+        }
+
+        // Verify email
+        private bool IsValidEmail(string email)
+        {
+            if (string.IsNullOrWhiteSpace(email))
+                return false;
+
+            try
+            {
+                // Normalize the domain
+                email = Regex.Replace(email, @"(@)(.+)$", DomainMapper,
+                                      RegexOptions.None, TimeSpan.FromMilliseconds(200));
+
+                // Examines the domain part of the email and normalizes it.
+                string DomainMapper(Match match)
+                {
+                    // Use IdnMapping class to convert Unicode domain names.
+                    var idn = new IdnMapping();
+
+                    // Pull out and process domain name (throws ArgumentException on invalid)
+                    string domainName = idn.GetAscii(match.Groups[2].Value);
+
+                    return match.Groups[1].Value + domainName;
+                }
+            }
+            catch (RegexMatchTimeoutException e)
+            {
+                return false;
+            }
+            catch (ArgumentException e)
+            {
+                return false;
+            }
+
+            try
+            {
+                return Regex.IsMatch(email,
+                    @"^[^@\s]+@[^@\s]+\.[^@\s]+$",
+                    RegexOptions.IgnoreCase, TimeSpan.FromMilliseconds(250));
+            }
+            catch (RegexMatchTimeoutException)
+            {
+                return false;
+            }
         }
 
         // Enables user to submit once all form fields are filled

@@ -34,7 +34,7 @@ namespace ApiVault.DataModels
                 .Build();
             });
 
-            Debug.Print("InitializeConnection Finished");
+            Debug.Print("Initialize Connection Finished");
         }
 
         public async Task<ISession> GetSession() 
