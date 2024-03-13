@@ -82,7 +82,7 @@ namespace ApiVault.ViewModels
 
         // Database variables
         private AstraDbConnection dbConnection;
-        private ISession session;
+        private ISession InitPoolSession;
 
         // public string StatusMessage { get; set; }
         private string statusMessage;
@@ -119,9 +119,10 @@ namespace ApiVault.ViewModels
 
         public async Task InitializeAsync()
         {
-
+            // connect to database
             await dbConnection.InitializeConnection();
-            session = await dbConnection.GetSession();
+            // init pool session
+            InitPoolSession = await dbConnection.GetSession();
         }
 
         /*

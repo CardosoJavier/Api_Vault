@@ -3,6 +3,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 			 xmlns:vm="clr-namespace:ApiVault.ViewModels;assembly=ApiVault"
+			 xmlns:local="clr-namespace:ApiVault.Converters;assembly=ApiVault"
 			 mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="650"
              x:Class="ApiVault.Views.LoginView"
 			 x:DataType="vm:LoginViewModel"
@@ -40,6 +41,7 @@
 					SelectionBrush="#7B62FD"
 					CaretBrush="Black"
 					Foreground="Black"
+					Text="{Binding Username}"
 					/>
 
 				<TextBox
@@ -56,9 +58,10 @@
 					SelectionBrush="#7B62FD"
 					CaretBrush="Black"
 					Foreground="Black"
+					Text="{Binding Password}"
 					/>
 
-				<!-- SignIn Btn -->
+				<!-- Login Btn -->
 				<Button
 					Name="SignInBtn"
 					IsEnabled="{Binding CanSubmit}"
@@ -72,10 +75,18 @@
 					HorizontalContentAlignment="Center"
 					VerticalContentAlignment="Center"
 					Margin="10"
-					Click="NavToDashboard"
+					Command="{Binding LoginCommand}"
 					>
 					Sign In
 				</Button>
+				<TextBlock
+					HorizontalAlignment="Center"
+					VerticalAlignment="Center"
+					Text="{Binding StatusMessage}"
+					Foreground="Red"
+					Margin="0 12 0 -25"
+					FontSize="13"
+				/>
 				
 				<!-- Sign up -->
 				<StackPanel 
