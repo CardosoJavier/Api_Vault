@@ -39,8 +39,12 @@
 		</Grid>
 		
 		<!-- Api Key panels -->
-		<StackPanel Margin="10 20">
+		<StackPanel Margin="45 80">
 			<!-- View Placeholder -->
+			<local:ApiKeyView/>
+			<local:ApiKeyView/>
+			<local:ApiKeyView/>
+			<local:ApiKeyView/>
 			<local:ApiKeyView/>
 		</StackPanel>
 	</Panel>

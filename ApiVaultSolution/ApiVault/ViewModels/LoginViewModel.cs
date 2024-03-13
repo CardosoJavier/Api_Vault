@@ -150,7 +150,7 @@ namespace ApiVault.ViewModels
         }
 
         // login event
-        public void OnLoginSuccess()
+        private void OnLoginSuccess()
         {
             LoginSuccessful?.Invoke(this, EventArgs.Empty);
         }

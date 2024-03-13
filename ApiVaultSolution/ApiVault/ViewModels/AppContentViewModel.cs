@@ -34,7 +34,6 @@ namespace ApiVault.ViewModels
         {
             new ListItemTemplate(typeof(DashboardPageViewModel), "home_regular"),
             new ListItemTemplate(typeof(GroupsPageViewModel), "group_regular"),
-            new ListItemTemplate(typeof(DisconnectPageViewModel), "power_regular")
         };
 
         // Keeps track of selected navbar btn

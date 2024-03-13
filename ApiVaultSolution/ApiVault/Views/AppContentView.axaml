@@ -3,6 +3,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 			 xmlns:vm="using:ApiVault.ViewModels"
+			 xmlns:ic="using:FluentIcons.Avalonia"
              mc:Ignorable="d" d:DesignWidth="1200" d:DesignHeight="800"
              x:Class="ApiVault.Views.AppContentView"
 			 x:DataType="vm:AppContentViewModel">
@@ -18,38 +19,51 @@
 		>
 		<!-- Left-side navbar-->
 		<SplitView.Pane>
-			<StackPanel
-				Spacing="15"
-				Margin="10">
-				<!-- Open/close toggle btn-->
-				<Button
-					Foreground="White"
-					Background="#7B62FD"
-					Command="{Binding ToggleMenuCommand}">
-					<PathIcon Data="{StaticResource line_horizontal_3_regular}"></PathIcon>
-				</Button>
-				<!-- Menu option-->
-				<ListBox ItemsSource="{Binding NavBarBtns}" SelectedItem="{Binding SelectedNavOption}">
-					<ListBox.ItemTemplate>
-						<DataTemplate DataType="{x:Type vm:ListItemTemplate}">
-							<StackPanel Spacing="15" Orientation="Horizontal">
-								<PathIcon Data="{Binding Icon}"/>
-								<TextBlock Text="{Binding Label}"></TextBlock>
-							</StackPanel>
-						</DataTemplate>
-					</ListBox.ItemTemplate>
-				</ListBox>
-				<!-- Logout button -->
-				
-			</StackPanel>
-		</SplitView.Pane>
+            <DockPanel Margin="10" LastChildFill="False">
+                <!-- Open/close toggle button -->
+                <Button DockPanel.Dock="Top"
+                        Foreground="White"
+                        Background="#7B62FD"
+                        Command="{Binding ToggleMenuCommand}"
+                        Margin="0,0,0,15"> <!-- Margin added to maintain spacing between items -->
+                    <PathIcon Data="{StaticResource line_horizontal_3_regular}"/>
+                </Button>
+        
+                <!-- Menu option -->
+                <ListBox DockPanel.Dock="Top"
+                         ItemsSource="{Binding NavBarBtns}" 
+                         SelectedItem="{Binding SelectedNavOption}"
+                         Margin="0,0,0,15"> <!-- Margin added to maintain spacing between items -->
+                    <ListBox.ItemTemplate>
+                        <DataTemplate DataType="{x:Type vm:ListItemTemplate}">
+                            <StackPanel Spacing="15" Orientation="Horizontal">
+                                <PathIcon Data="{Binding Icon}"/>
+                                <TextBlock Text="{Binding Label}"/>
+                            </StackPanel>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+        
+                <!-- Stretchable content (if any other content is needed to fill space) -->
+                <Panel DockPanel.Dock="Top"/>
+
+                <!-- Logout button -->
+                <Button DockPanel.Dock="Bottom" 
+                        Background="#2b2b2b"
+				        Height="40"
+						Margin="0 0 0 10">
+                    <ic:SymbolIcon Symbol="Power"/>
+                </Button>
+            </DockPanel>
+        </SplitView.Pane>
 		
 		<!-- Screen content -->
 		<SplitView.Content>
 			<Border CornerRadius="40 0 0 0"
 					Background="#000000">
-				<TransitioningContentControl Content="{Binding CurrentPage}" />
-				
+				<ScrollViewer>
+					<TransitioningContentControl Content="{Binding CurrentPage}" />
+				</ScrollViewer>
 			</Border>
 		</SplitView.Content>
 	</SplitView>

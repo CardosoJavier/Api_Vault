@@ -9,7 +9,7 @@
 	<StackPanel
 			Orientation="Vertical"
 			Background="Transparent"
-			Margin="50">
+			Margin="50 20">
 		<!-- Top -->
 		<Border
 			CornerRadius="15 0"
@@ -23,14 +23,14 @@
 					DockPanel.Dock="Left"
 					VerticalAlignment="Center"
 					Margin="40 0 0 0"
-					FontSize="20"
+					FontSize="18"
 					Text="Description"/>
 				<!-- Group -->
 				<TextBlock
 					HorizontalAlignment="Right"
 					VerticalAlignment="Center"
 					Margin="0 0 90 0"
-					FontSize="20"
+					FontSize="18"
 					Text="Group"/>
 			</DockPanel>
 		</Border>
@@ -44,7 +44,7 @@
 				DockPanel.Dock="Left"
 				Margin="10 0 0 0"
 				VerticalAlignment="Center"
-				FontSize="25"
+				FontSize="22"
 				Text="**************************************05ca8181"/>
 			<!-- buttons -->
 			<StackPanel
@@ -57,14 +57,14 @@
 					Width="40"
 					Margin="5"
 					Background="#1A1C24">
-					<ic:SymbolIcon Symbol="Eye" IsFilled="False" FontSize="35"/>
+					<ic:SymbolIcon Symbol="Eye" IsFilled="False" FontSize="30"/>
 				</Button>
 
 				<Button
 					Height="50"
 					Width="50"
 					Background="#1A1C24">
-					<ic:SymbolIcon Symbol="Clipboard" IsFilled="False" FontSize="35"/>
+					<ic:SymbolIcon Symbol="Clipboard" IsFilled="False" FontSize="30"/>
 				</Button>
 			</StackPanel>
 		</DockPanel>
