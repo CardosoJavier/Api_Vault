@@ -1,3 +1,4 @@
+using ApiVault.ViewModels;
 using Avalonia.Controls;
 
 namespace ApiVault.Views
@@ -7,6 +8,7 @@ namespace ApiVault.Views
         public Add_KeyPageView()
         {
             InitializeComponent();
+            DataContext = new Add_KeyPageViewModel();
         }
     }
 }

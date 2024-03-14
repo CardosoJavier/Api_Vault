@@ -33,16 +33,5 @@ namespace ApiVault.Views
                 mainWindow.Content = new SignUpView();
             }
         }
-
-        /*
-        // Navigate to dashboard when login success by reasingning main window content
-        private void NavToDashboard(object sender, RoutedEventArgs e)
-        {
-            if (this.Parent is Window mainWindow)
-            {
-                mainWindow.Content = new AppContentView();
-            }
-        }
-        */
     }
 }
