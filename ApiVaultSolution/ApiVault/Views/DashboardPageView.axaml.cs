@@ -2,6 +2,7 @@ using ApiVault.ViewModels;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Metadata;
+using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Diagnostics;
 
@@ -14,7 +15,7 @@ namespace ApiVault.Views
             InitializeComponent();
 
             // Bind view with corresponding ViewModel 
-            DataContext = new DashboardPageViewModel();
+            DataContext = App.ServiceProvider.GetService<DashboardPageView>();
         }
     }
 }

@@ -1,5 +1,6 @@
 using ApiVault.ViewModels;
 using Avalonia.Controls;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace ApiVault.Views
 {
@@ -8,7 +9,11 @@ namespace ApiVault.Views
         public Add_KeyPageView()
         {
             InitializeComponent();
-            DataContext = new Add_KeyPageViewModel();
+            DataContext = App.ServiceProvider.GetService<Add_KeyPageViewModel>();
+        }
+
+        private void Binding(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
+        {
         }
     }
 }

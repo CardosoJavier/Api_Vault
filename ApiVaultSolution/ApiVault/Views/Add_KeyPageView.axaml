@@ -20,23 +20,19 @@
 			<!-- Api key description -->
 			<StackPanel>
 				<TextBlock Margin="0 0 0 10" Text="Api Key Name"/>
-				<TextBox CaretBrush="Black" Background="White" Foreground="Black"/>
+				<TextBox CaretBrush="Black" Background="White" Foreground="Black" Text="{Binding ApiName}"/>
 			</StackPanel>
 			<!-- Api key -->
 			<StackPanel Margin="0 35 0 0">
 				<TextBlock Margin="0 0 0 10" Text="Api Key"/>
-				<TextBox CaretBrush="Black" Background="White" Foreground="Black"/>
+				<TextBox CaretBrush="Black" Background="White" Foreground="Black" Text="{Binding ApiKey}"/>
 			</StackPanel>
 			<!-- Group settings -->
 			<Grid Margin="0 80 0 0" ColumnDefinitions="*,*,*" RowDefinitions="Auto" HorizontalAlignment="Center" VerticalAlignment="Center">
 				<!-- Select existing group -->
 				<StackPanel Grid.Column="0" Margin="40 0">
 					<TextBlock Text="Select Api Group"/>
-					<ComboBox Width="150">
-						<ComboBoxItem> Group 1</ComboBoxItem>
-						<ComboBoxItem> Group 2</ComboBoxItem>
-						<ComboBoxItem> Group 3</ComboBoxItem>
-					</ComboBox>
+					<ComboBox Width="150" ItemsSource="{Binding ApiGroups}" SelectedItem="{Binding ApiGroup}"/>
 				</StackPanel>
 				<!-- Divider-->
 				<StackPanel Grid.Column="1" VerticalAlignment="Center">
@@ -50,10 +46,12 @@
 			</Grid>
 			<!-- Submit btn -->
 			<Button Width="150"
+					IsEnabled="{Binding CanSubmit}"
 					Margin="0 50 0 0"
 					VerticalAlignment="Center"
 					HorizontalAlignment="Center"
-					Background="#7B62FD">
+					Background="#7B62FD"
+					Command="{Binding AddKeyCommand}">
 				<TextBlock Text="Save key" HorizontalAlignment="Center"/>
 			</Button>
 		</StackPanel>

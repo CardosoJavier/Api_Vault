@@ -1,7 +1,6 @@
 ﻿using ApiVault.DataModels;
 using ApiVault.Services;
 using Cassandra;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 using ReactiveUI;
 using System;
 using System.Diagnostics;

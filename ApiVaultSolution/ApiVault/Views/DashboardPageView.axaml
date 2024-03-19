@@ -4,9 +4,10 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 			 xmlns:local="using:ApiVault.Views"
 			 xmlns:ic="using:FluentIcons.Avalonia"
+			 xmlns:vm="clr-namespace:ApiVault.ViewModels;assembly=ApiVault"
              mc:Ignorable="d" d:DesignWidth="1400" d:DesignHeight="800"
-			 xmlns:vm="using:ApiVault.ViewModels"
-             x:Class="ApiVault.Views.DashboardPageView">
+             x:Class="ApiVault.Views.DashboardPageView"
+			 x:DataType="vm:DashboardPageViewModel">
 
 	<Panel Margin="15">
 		<!-- Search and filter tools -->
@@ -38,7 +39,7 @@
 					 FontSize="18"/>
 		</Grid>
 		
-		
+		<TextBlock Text="{Binding UserName}"/>
 		
 		<!-- Api Key panels -->
 		<StackPanel Margin="45 80">

@@ -1,5 +1,6 @@
 using Avalonia.Controls;
 using ApiVault.ViewModels;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace ApiVault.Views
 {
@@ -8,7 +9,7 @@ namespace ApiVault.Views
         public AppContentView()
         {
             InitializeComponent();
-            DataContext = new AppContentViewModel();
+            DataContext = App.ServiceProvider.GetService<AppContentViewModel>();
         }   
     }
 }

@@ -1,9 +1,4 @@
 ﻿using ApiVault.Services;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ApiVault.ViewModels
 {
@@ -11,14 +6,18 @@ namespace ApiVault.ViewModels
     {
         // - - - - - - - - - - Class Varibles - - - - - - - -  - - 
         private readonly IUserSessionService _userSessionService;
+        public string? UserName { get; set; } = string.Empty;
+        
 
         // - - - - - - - - - - Constructors - - - - - - - -  - - 
-        /*
         public DashboardPageViewModel(IUserSessionService userSessionService)
         {
             _userSessionService = userSessionService;
+            UserName = _userSessionService.Username;
         }
-        */
-        
+
+        // - - - - - - - - - - Methods - - - - - - - -  - - 
+
+
     }
 }

@@ -1,4 +1,5 @@
-﻿using ApiVault.Views;
+﻿using ApiVault.Services;
+using ApiVault.Views;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Media;
@@ -11,62 +12,71 @@ namespace ApiVault.ViewModels
 {
     public partial class AppContentViewModel : ObservableObject
     {
-        // Expand and hide left size navigation bar
-        // Navbar panel status tracket and method to update status
+        // - - - - - - - Class Variables - - - - - - - 
+        private readonly IViewModelFactory _viewModelFactory;
+
         [ObservableProperty]
         private bool _isPaneOpen;
 
         [RelayCommand]
-        private void ToggleMenu()
-        {
-            IsPaneOpen = !IsPaneOpen;
-        }
+        private void ToggleMenu() => IsPaneOpen = !IsPaneOpen;
 
-        // Current display page
-        // The dashboard view is set as default current page after login
         [ObservableProperty]
-        private ViewModelBase _currentPage = new DashboardPageViewModel();
+        private ViewModelBase _currentPage;
 
-        // Define collection of navbar items by adding the corresponding classes of each
-        // Navbar option into the Navbar list
-        // Second parameter are the icon identifiers defined in the App.axaml
-        public ObservableCollection<ListItemTemplate> NavBarBtns { get; } = new()
-        {
-            new ListItemTemplate(typeof(DashboardPageViewModel), "home_regular"),
-            new ListItemTemplate(typeof(GroupsPageViewModel), "group_regular"),
-            new ListItemTemplate(typeof(Add_KeyPageViewModel), "add_square_regular")
-        };
+        public ObservableCollection<ListItemTemplate> NavBarBtns { get; }
 
-        // Keeps track of selected navbar btn
         [ObservableProperty]
         private ListItemTemplate? _selectedNavOption;
 
-        // Based on selected navbar btn, it instantiates a new class of the
-        // selected view
+
+        // - - - - - - - Constructor - - - - - - - 
+        public AppContentViewModel(IViewModelFactory viewModelFactory)
+        {
+            _viewModelFactory = viewModelFactory;
+            // Initial currentPage setup through factory
+            _currentPage = _viewModelFactory.CreateViewModel(typeof(DashboardPageViewModel));
+
+            NavBarBtns = new ObservableCollection<ListItemTemplate>
+            {
+            new ListItemTemplate(typeof(DashboardPageViewModel), "home_regular"),
+            new ListItemTemplate(typeof(GroupsPageViewModel), "group_regular"),
+            new ListItemTemplate(typeof(Add_KeyPageViewModel), "add_square_regular"),
+            };
+        }
+
+        // - - - - - - - Methods- - - - - - - 
         partial void OnSelectedNavOptionChanged(ListItemTemplate? value)
         {
-            if (value is null) return;
-            var instance = Activator.CreateInstance(value.ModelType);
-            if (instance is null) return;
-            CurrentPage = (ViewModelBase)instance;
+            if (value == null) return;
+            CurrentPage = _viewModelFactory.CreateViewModel(value.ViewModelType);
         }
     }
 
+
+    // - - - - - - - Helper classes - - - - - - - 
     // Class to add navigation among navbar items
     // It takes the ViewModel file name, removes "ViewModel" and uses the
     // remaining as label
     public class ListItemTemplate
     {
         public string Label { get; }
-        public Type ModelType { get; set; }
+        public Type ViewModelType { get; }
         public StreamGeometry Icon { get; }
 
-        public ListItemTemplate(Type type, string iconKey)
+        public ListItemTemplate(Type viewModelType, string iconKey)
         {
-            ModelType = type;
-            Label = type.Name.Replace("PageViewModel", "").Replace("_"," ");
-            Application.Current.TryFindResource(iconKey, out var navIcon);
-            Icon = (StreamGeometry)navIcon!;
+            ViewModelType = viewModelType;
+            Label = viewModelType.Name.Replace("PageViewModel", "").Replace("_", " ");
+
+            if (Application.Current.TryFindResource(iconKey, out var navIcon))
+            {
+                Icon = (StreamGeometry)navIcon!;
+            }
+            else
+            {
+                throw new InvalidOperationException($"Icon key '{iconKey}' not found.");
+            }
         }
     }
 }
