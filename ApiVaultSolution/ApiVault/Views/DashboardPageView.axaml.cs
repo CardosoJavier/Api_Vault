@@ -3,6 +3,7 @@ using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Metadata;
 using System;
+using System.Diagnostics;
 
 namespace ApiVault.Views
 {
@@ -13,7 +14,7 @@ namespace ApiVault.Views
             InitializeComponent();
 
             // Bind view with corresponding ViewModel 
-            DataContext = new  DashboardPageViewModel();
+            DataContext = new DashboardPageViewModel();
         }
     }
 }

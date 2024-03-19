@@ -40,7 +40,7 @@ namespace ApiVault.DataModels
 
             catch (Exception ex) 
             {
-                Debug.Print("Db Connection error");
+                Debug.Print("Db Connection error: " + ex.ToString());
             }
         }
 

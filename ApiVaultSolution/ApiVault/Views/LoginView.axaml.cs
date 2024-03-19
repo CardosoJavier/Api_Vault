@@ -1,6 +1,8 @@
 using ApiVault.ViewModels;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
+using Microsoft.Extensions.DependencyInjection;
+using System;
 
 namespace ApiVault.Views
 {
@@ -10,10 +12,14 @@ namespace ApiVault.Views
         public LoginView()
         {
             InitializeComponent();
-            var loginViewModel = new LoginViewModel();
-            DataContext = loginViewModel;
 
-            loginViewModel.LoginSuccessful += (sender, e) => NavToDashboard();
+            // Dependency injection
+            DataContext = App.ServiceProvider.GetService<LoginViewModel>();
+
+            if (DataContext is LoginViewModel viewModel)
+            {
+                viewModel.LoginSuccessful += (sender, e) => NavToDashboard();
+            }
         }
 
         private void NavToDashboard()

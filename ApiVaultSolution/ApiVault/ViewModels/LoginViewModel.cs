@@ -1,4 +1,5 @@
 ﻿using ApiVault.DataModels;
+using ApiVault.Services;
 using Cassandra;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using ReactiveUI;
@@ -10,14 +11,8 @@ using System.Threading.Tasks;
 
 namespace ApiVault.ViewModels
 {
-    public class LoginViewModel : ReactiveObject, IRoutableViewModel
+    public class LoginViewModel : ReactiveObject
     {
-        /* - - - - - - - - - - Routing - - - - - - - - - - */
-        // Routing interface needed properties.
-        // Sets the view identifier to "login"
-        public IScreen? HostScreen { get; }
-        public string? UrlPathSegment { get; } = "login";
-
         /* - - - - - - - - - - Binding View Variables - - - - - - - - - - */
         private string? username;
         public string? Username
@@ -54,19 +49,19 @@ namespace ApiVault.ViewModels
 
         public event EventHandler? LoginSuccessful;
 
-        /* - - - - - - - - - - Constructors - - - - - - - - - - */
-        public LoginViewModel(IScreen screen)
-        {
-            HostScreen = screen;
-        }
+        private readonly IUserSessionService _userSessionService;
 
-        public LoginViewModel() 
+
+        /* - - - - - - - - - - Constructors - - - - - - - - - - */
+        public LoginViewModel(IUserSessionService userSessionService)
         {
+            //HostScreen = screen;
+            _userSessionService = userSessionService;
+
             // initialze database connection
             LoginCommand = ReactiveCommand.CreateFromTask(Login);
             dbConnection = new AstraDbConnection();
             InitializeAsync();
-
         }
 
         /* - - - - - - - - - - - Commands - - - - - - - - - - - */
@@ -93,6 +88,7 @@ namespace ApiVault.ViewModels
             if (validCredentials)
             {
                 Debug.Print("Access granted");
+                _userSessionService.Username = username;
                 OnLoginSuccess();
             }
 
