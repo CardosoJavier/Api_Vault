@@ -6,6 +6,7 @@ using System;
 using System.Collections.ObjectModel;
 using System.Data.Common;
 using System.Diagnostics;
+using System.Linq;
 using System.Numerics;
 using System.Reactive;
 using System.Threading.Tasks;
@@ -61,6 +62,13 @@ namespace ApiVault.ViewModels
             }
         }
 
+        private string statusMessage;
+        public string StatusMessage
+        {
+            get => statusMessage;
+            set => this.RaiseAndSetIfChanged(ref statusMessage, value);
+        }
+
         public bool CanSubmit { get; set; } = false;
 
         private readonly IUserSessionService _userSessionService;
@@ -77,7 +85,7 @@ namespace ApiVault.ViewModels
             dbConnection = new AstraDbConnection();
             InitializeAsync();
 
-            AddKeyCommand = ReactiveCommand.Create(AddKey);
+            AddKeyCommand = ReactiveCommand.CreateFromTask(AddKey);
         }
 
         /* - - - - - - - - - - - Commands - - - - - - - - - - - */
@@ -97,16 +105,54 @@ namespace ApiVault.ViewModels
             }
         }
 
-        private void AddKey() 
+        private async Task AddKey() 
         {
-            // generate UUID
-            var UUID = Guid.NewGuid();
+            var tryInsert = await InsertKey();
 
-            // Expiration date
-            var expirationDate = GenerateExpirationDate();
+            if (tryInsert)
+            {
+                ApiGroup = string.Empty;
+                ApiKey = string.Empty;
+                ApiName = string.Empty;
 
-            var inserteUser = session.Prepare("INSERT INTO apivault_space.apikeys (keyid,  apigroup, apikey, apiname, replacedate, username) VALUES (?, ?, ?, ?, ?, ?)");
-            session.Execute(inserteUser.Bind(UUID, apiGroup, apiKey, apiName, expirationDate, _userSessionService.Username));
+                StatusMessage = "Key stored successfully";
+            }
+
+            else
+            {
+                StatusMessage = "Failed to create user";
+            }
+
+        }
+
+        private async Task<bool> InsertKey()
+        {
+            return await Task.Run(() =>
+            {
+                try
+                {
+                    // generate UUID
+                    var UUID = Guid.NewGuid();
+
+                    // Expiration date
+                    var expirationDate = GenerateExpirationDate();
+
+                    var inserteUser = session.Prepare("INSERT INTO apivault_space.apikeys (keyid,  apigroup, apikey, apiname, replacedate, username) VALUES (?, ?, ?, ?, ?, ?)");
+                    session.Execute(inserteUser.Bind(UUID, apiGroup, apiKey, apiName, expirationDate, _userSessionService.Username));
+
+                    // Verify added key
+                    var veryfyNewKey = session.Prepare("SELECT * FROM apivault_space.apikeys WHERE keyid = ?");
+                    var checkNewUser = session.Execute(veryfyNewKey.Bind(UUID));
+
+                    return checkNewUser.Any();
+                }
+
+                catch (Exception ex)
+                {
+                    Debug.WriteLine(ex);
+                    return false;
+                }
+            });
         }
 
         // Expiration date calculation

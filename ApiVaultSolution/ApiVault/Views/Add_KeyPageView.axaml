@@ -3,9 +3,15 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 			 xmlns:vm="clr-namespace:ApiVault.ViewModels;assembly=ApiVault"
+			 xmlns:local="clr-namespace:ApiVault.Converters;assembly=ApiVault"
              mc:Ignorable="d" d:DesignWidth="1200" d:DesignHeight="800"
              x:Class="ApiVault.Views.Add_KeyPageView"
 			 x:DataType="vm:Add_KeyPageViewModel">
+
+	<UserControl.Resources>
+		<local:MessageToColor x:Key="MessageToColor"/>
+	</UserControl.Resources>
+	
 	<Border
 		  BorderBrush="#7B62FD"
 		  BorderThickness="2"
@@ -54,6 +60,11 @@
 					Command="{Binding AddKeyCommand}">
 				<TextBlock Text="Save key" HorizontalAlignment="Center"/>
 			</Button>
+			<!-- Status message -->
+			<TextBlock Text="{Binding StatusMessage}" 
+					   FontSize="16" HorizontalAlignment="Center" 
+					   VerticalAlignment="Center" Margin="0 70"
+					   Foreground="{Binding StatusMessage, Converter={StaticResource MessageToColor}}"/>
 		</StackPanel>
 	</Border>
 </UserControl>

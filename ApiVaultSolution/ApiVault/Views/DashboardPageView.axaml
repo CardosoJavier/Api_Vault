@@ -39,8 +39,6 @@
 					 FontSize="18"/>
 		</Grid>
 		
-		<TextBlock Text="{Binding UserName}"/>
-		
 		<!-- Api Key panels -->
 		<StackPanel Margin="45 80">
 			<!-- View Placeholder -->
