@@ -120,7 +120,7 @@ namespace ApiVault.ViewModels
 
             else
             {
-                StatusMessage = "Failed to create user";
+                StatusMessage = "Failed to store api key";
             }
 
         }

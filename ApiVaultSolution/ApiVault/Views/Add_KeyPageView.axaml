@@ -16,29 +16,30 @@
 		  BorderBrush="#7B62FD"
 		  BorderThickness="2"
 		  CornerRadius="25"
-		  Margin="80">
+		  Margin="80 0"
+		  Height="650">
 		<StackPanel
 			Orientation="Vertical"
 			Background="Transparent"
 			Margin="30">
 			<!-- Title -->
-			<TextBlock HorizontalAlignment="Center" Text="Add Api Key" FontSize="26"/>
+			<TextBlock HorizontalAlignment="Center" Text="Add API Key" FontSize="32" Margin="0 0 0 50"/>
 			<!-- Api key description -->
 			<StackPanel>
-				<TextBlock Margin="0 0 0 10" Text="Api Key Name"/>
-				<TextBox CaretBrush="Black" Background="White" Foreground="Black" Text="{Binding ApiName}"/>
+				<TextBlock Margin="0 0 0 10" Text="API Key Name" FontSize="24"/>
+				<TextBox CaretBrush="Black" Background="White" Foreground="Black" Text="{Binding ApiName}" FontSize="20"/>
 			</StackPanel>
 			<!-- Api key -->
 			<StackPanel Margin="0 35 0 0">
-				<TextBlock Margin="0 0 0 10" Text="Api Key"/>
-				<TextBox CaretBrush="Black" Background="White" Foreground="Black" Text="{Binding ApiKey}"/>
+				<TextBlock Margin="0 0 0 10" Text="API Key" FontSize="24"/>
+				<TextBox CaretBrush="Black" Background="White" Foreground="Black" Text="{Binding ApiKey}" FontSize="20"/>
 			</StackPanel>
 			<!-- Group settings -->
 			<Grid Margin="0 80 0 0" ColumnDefinitions="*,*,*" RowDefinitions="Auto" HorizontalAlignment="Center" VerticalAlignment="Center">
 				<!-- Select existing group -->
 				<StackPanel Grid.Column="0" Margin="40 0">
 					<TextBlock Text="Select Api Group"/>
-					<ComboBox Width="150" ItemsSource="{Binding ApiGroups}" SelectedItem="{Binding ApiGroup}"/>
+					<ComboBox Width="200" ItemsSource="{Binding ApiGroups}" SelectedItem="{Binding ApiGroup}"/>
 				</StackPanel>
 				<!-- Divider-->
 				<StackPanel Grid.Column="1" VerticalAlignment="Center">
@@ -47,11 +48,12 @@
 				<!-- Create new group -->
 				<StackPanel Grid.Column="2" Margin="40 0">
 					<TextBlock Text="Create New Group"/>
-					<TextBox CaretBrush="Black" Width="150" Foreground="Black"/>
+					<TextBox CaretBrush="Black" Width="200" Foreground="Black"/>
 				</StackPanel>
 			</Grid>
 			<!-- Submit btn -->
-			<Button Width="150"
+			<Button Width="200"
+					Height="30"
 					IsEnabled="{Binding CanSubmit}"
 					Margin="0 50 0 0"
 					VerticalAlignment="Center"

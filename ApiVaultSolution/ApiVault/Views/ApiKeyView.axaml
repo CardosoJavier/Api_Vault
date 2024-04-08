@@ -26,14 +26,14 @@
 					VerticalAlignment="Center"
 					Margin="40 0 0 0"
 					FontSize="18"
-					Text="Description"/>
+					Text="{Binding ApiKeyName}"/>
 				<!-- Group -->
 				<TextBlock
 					HorizontalAlignment="Right"
 					VerticalAlignment="Center"
 					Margin="0 0 90 0"
 					FontSize="18"
-					Text="Group"/>
+					Text="{Binding Group}"/>
 			</DockPanel>
 		</Border>
 		<!-- Content -->
@@ -47,7 +47,7 @@
 				Margin="10 0 0 0"
 				VerticalAlignment="Center"
 				FontSize="22"
-				Text="**************************************05ca8181"/>
+				Text="{Binding ApiKey}"/>
 			<!-- buttons -->
 			<StackPanel
 				DockPanel.Dock="Right"

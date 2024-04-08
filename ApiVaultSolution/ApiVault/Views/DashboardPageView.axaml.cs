@@ -15,7 +15,7 @@ namespace ApiVault.Views
             InitializeComponent();
 
             // Bind view with corresponding ViewModel 
-            DataContext = App.ServiceProvider.GetService<DashboardPageView>();
+            DataContext = App.ServiceProvider.GetService<DashboardPageViewModel>();
         }
     }
 }

@@ -10,6 +10,7 @@
 			 x:DataType="vm:DashboardPageViewModel">
 
 	<Panel Margin="15">
+		
 		<!-- Search and filter tools -->
 		<Grid ColumnDefinitions="*,*,*" RowDefinitions="Auto" Margin="4">
 			<!-- Sort by -->
@@ -38,16 +39,22 @@
 					 CaretBrush="Black"
 					 FontSize="18"/>
 		</Grid>
+
+		<!-- Loading indicator -->
+		<ProgressBar IsIndeterminate="True"
+					 IsVisible="{Binding IsLoading}"
+					 Height="4"
+					 HorizontalAlignment="Stretch"
+					Foreground="White"/>
 		
 		<!-- Api Key panels -->
-		<StackPanel Margin="45 80">
-			<!-- View Placeholder -->
-			<local:ApiKeyView/>
-			<local:ApiKeyView/>
-			<local:ApiKeyView/>
-			<local:ApiKeyView/>
-			<local:ApiKeyView/>
-		</StackPanel>
+		<ItemsControl Margin="45 80" ItemsSource="{Binding ApiKeysList}">
+			<ItemsControl.ItemTemplate>
+				<DataTemplate>
+					<local:ApiKeyView/>
+				</DataTemplate>
+			</ItemsControl.ItemTemplate>
+		</ItemsControl>
 	</Panel>
 
 </UserControl>
