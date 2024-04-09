@@ -27,7 +27,8 @@ namespace ApiVault.ViewModels
 
         // Display keys
         public ObservableCollection<ApiKeyViewModel> ApiKeysList { get; }
-        public List<string> Groups { get; }
+        public ObservableCollection<string> Groups { get; }
+
 
         private bool _isLoading;
         public bool IsLoading
@@ -37,18 +38,18 @@ namespace ApiVault.ViewModels
         }
 
         // Search, filter, and sort
-        private ComboBoxItem _filterCriteria;
-        public ComboBoxItem FilterCriteria
+        private string _filterCriteria;
+        public string FilterCriteria
         {
             get => _filterCriteria;
             set
             {
-                
+                Debug.WriteLine($"Filter: {value}");
                 this.RaiseAndSetIfChanged(ref _filterCriteria, value);
-                Debug.WriteLine($"filter: {FilterCriteria.Content.ToString()}");
                 _ = ApplyFilterAsync();
             }
         }
+
 
         private ComboBoxItem _sortCriteria;
         public ComboBoxItem SortCriteria
@@ -86,7 +87,7 @@ namespace ApiVault.ViewModels
             InitializeAsync();
 
             ApiKeysList = new ObservableCollection<ApiKeyViewModel>();
-            Groups = new List<string>();
+            Groups = new ObservableCollection<string>();
 
         }
 
@@ -128,7 +129,7 @@ namespace ApiVault.ViewModels
                 // Debug.WriteLine($"{apiName,-30} {apiKey,-36} {apiGroup,-20} {replaceDate,-30}");
             }
 
-            Groups.Sort();
+            Groups.Order();
         }
 
         // Search method
@@ -159,25 +160,21 @@ namespace ApiVault.ViewModels
         // Filter keys
         private async Task ApplyFilterAsync()
         {
-            var filterValue = ApiKeysList
-                .Where(apiKey => string.IsNullOrEmpty(FilterCriteria.Content.ToString()) || apiKey.Group.Contains(FilterCriteria.Content.ToString(), StringComparison.OrdinalIgnoreCase))
-                .ToList();
+            GetAllApiKeys();
+            var filteredList = ApiKeysList.Where(apiKey => apiKey.Group.Equals(_filterCriteria, StringComparison.OrdinalIgnoreCase)).ToList();
 
-            // Now, update ApiKeysList based on filteredAndSorted data
-            // Make sure to clear and add items back to notify UI for changes.
             ApiKeysList.Clear();
-            foreach (var item in filterValue)
+            foreach (var item in filteredList)
             {
                 ApiKeysList.Add(item);
             }
-
-            
         }
-        
+
+
         // Sort method
         private async Task ApplySortAsync()
         {
-            List<ApiKeyViewModel> sortedList = new List<ApiKeyViewModel>();
+            List<ApiKeyViewModel> sortedList = new();
             Debug.WriteLine(_sortCriteria);
             switch (_sortCriteria.Content.ToString())
             {

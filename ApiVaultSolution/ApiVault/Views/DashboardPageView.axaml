@@ -28,7 +28,10 @@
 			<!-- Filter by -->
 			<StackPanel Orientation="Horizontal" Grid.Column="1">
 				<TextBlock Text="Filter by:" FontSize="18" VerticalAlignment="Center" Margin="10 0"/>
-				<ComboBox ItemsSource="{Binding Groups}" SelectedItem="{Binding FilterCriteria, Mode=TwoWay}" VerticalAlignment="Center" FontSize="16" Width="120">
+				<ComboBox ItemsSource="{Binding Groups}"
+						  SelectedItem="{Binding FilterCriteria}" 
+					      VerticalAlignment="Center" FontSize="16" Width="120">
+					
 				</ComboBox>
 			</StackPanel>
 
