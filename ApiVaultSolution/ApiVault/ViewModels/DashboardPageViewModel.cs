@@ -90,11 +90,7 @@ namespace ApiVault.ViewModels
                 {
                     Debug.WriteLine($"search: {value}");
                     this.RaiseAndSetIfChanged(ref _searchQuery, value);
-                    
-                    if ( value != string.Empty)
-                    {
-                        _ = ApplySearch();
-                    }
+                    _ = ApplySearch();
                 }
             }
         }
@@ -133,32 +129,35 @@ namespace ApiVault.ViewModels
         
         private async Task GetAllApiKeys()
         {
-            var query = session.Prepare("SELECT apiname, apikey, apigroup, replacedate FROM apikeys WHERE username = ? ALLOW FILTERING");
-            var apiKeys = session.Execute(query.Bind(_userSessionService.Username));
-
-            // TODO: Print table
-            // Print header
-            // Debug.WriteLine($"{"Api Name",-30} {"Api Key",-36} {"Api Group",-20} {"Replace Date",-30}");
-
-            // Iterate through the RowSet and print each row
-            foreach (var row in apiKeys)
+            await Task.Run(() =>
             {
-                var apiName = row.GetValue<string>("apiname");
-                var apiKey = row.GetValue<string>("apikey");
-                var apiGroup = row.GetValue<string>("apigroup");
-                var replaceDate = row.GetValue<DateTimeOffset>("replacedate").ToString("yyyy-MM-dd HH:mm:ss");
+                var query = session.Prepare("SELECT apiname, apikey, apigroup, replacedate FROM apikeys WHERE username = ? ALLOW FILTERING");
+                var apiKeys = session.Execute(query.Bind(_userSessionService.Username));
 
-                ApiKeysList.Add(new ApiKeyViewModel(apiName, apiKey, apiGroup, replaceDate));
-                if (!Groups.Contains(apiGroup))
+                // TODO: Print table
+                // Print header
+                // Debug.WriteLine($"{"Api Name",-30} {"Api Key",-36} {"Api Group",-20} {"Replace Date",-30}");
+
+                // Iterate through the RowSet and print each row
+                foreach (var row in apiKeys)
                 {
-                    Groups.Add(apiGroup);
+                    var apiName = row.GetValue<string>("apiname");
+                    var apiKey = row.GetValue<string>("apikey");
+                    var apiGroup = row.GetValue<string>("apigroup");
+                    var replaceDate = row.GetValue<DateTimeOffset>("replacedate").ToString("yyyy-MM-dd HH:mm:ss");
+
+                    ApiKeysList.Add(new ApiKeyViewModel(apiName, apiKey, apiGroup, replaceDate));
+                    if (!Groups.Contains(apiGroup))
+                    {
+                        Groups.Add(apiGroup);
+                    }
+
+                    // Print table row
+                    // Debug.WriteLine($"{apiName,-30} {apiKey,-36} {apiGroup,-20} {replaceDate,-30}");
                 }
 
-                // Print table row
-                // Debug.WriteLine($"{apiName,-30} {apiKey,-36} {apiGroup,-20} {replaceDate,-30}");
-            }
-
-            Groups.Order();
+                Groups.Order();
+            });
         }
 
         // Search method
@@ -189,9 +188,22 @@ namespace ApiVault.ViewModels
         // Filter keys
         private async Task ApplyFilterAsync()
         {
-            GetAllApiKeys();
-            var filteredList = ApiKeysList.Where(apiKey => apiKey.Group.Equals(_filterCriteria, StringComparison.OrdinalIgnoreCase)).ToList();
+            // Ensure that we start with a fresh list
+            ApiKeysList.Clear();
+            await GetAllApiKeys();
 
+            // If there's no filter set, just return
+            if (string.IsNullOrWhiteSpace(_filterCriteria))
+            {
+                return;
+            }
+
+            // Apply the filter
+            var filteredList = ApiKeysList
+                .Where(apiKey => apiKey.Group.Equals(_filterCriteria, StringComparison.OrdinalIgnoreCase))
+                .ToList();
+
+            // Clear the list and add the filtered items
             ApiKeysList.Clear();
             foreach (var item in filteredList)
             {
