@@ -2,6 +2,7 @@
 using ApiVault.Views;
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Media;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
@@ -61,8 +62,11 @@ namespace ApiVault.ViewModels
             // _userSessionService.Logout(); // Assuming you have a logout method in your user session service
 
             // Navigate back to the Login Page
-            CurrentPage = _viewModelFactory.CreateViewModel(typeof(LoginViewModel));
-            
+            if (Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
+            {
+                desktop.MainWindow.Content = new LoginView();
+            }
+
         }
     }
 

@@ -10,6 +10,6 @@ namespace ApiVault.Views
         {
             InitializeComponent();
             DataContext = App.ServiceProvider.GetService<AppContentViewModel>();
-        }   
+        }
     }
 }

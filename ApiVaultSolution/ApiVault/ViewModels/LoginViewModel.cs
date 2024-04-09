@@ -35,13 +35,13 @@ namespace ApiVault.ViewModels
             }
         }
 
-        private string statusMessage;
-        public string StatusMessage
+        private string? statusMessage;
+        public string? StatusMessage
         {
             get => statusMessage;
             set => this.RaiseAndSetIfChanged(ref statusMessage, value);
         }
-        public bool CanSubmit { get; set; } = false;
+        public bool? CanSubmit { get; set; } = false;
 
         private AstraDbConnection dbConnection;
         private ISession InitPoolSession;
