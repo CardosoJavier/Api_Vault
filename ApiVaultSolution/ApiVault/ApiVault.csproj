@@ -23,10 +23,6 @@
         <AvaloniaResource Remove="Assets\Icons.axaml" />
     </ItemGroup>
 
-	<ItemGroup>
-		<EmbeddedResource Include="DataModels/secure-connect-apivault.zip" />
-	</ItemGroup>
-
     <!-- Assets -->
     <ItemGroup>
         <None Remove="Assets\Logos\appLogo.png" />

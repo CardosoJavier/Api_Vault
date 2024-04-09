@@ -16,19 +16,19 @@
 			<!-- Sort by -->
 			<StackPanel Orientation="Horizontal" Grid.Column="0">
 				<TextBlock Text="Sort by: " FontSize="18" VerticalAlignment="Center" Margin="10 0"/>
-				<ComboBox SelectedIndex="0" VerticalAlignment="Center" FontSize="16">
-					<ComboBoxItem>Description</ComboBoxItem>
-					<ComboBoxItem>Group</ComboBoxItem>
-					<ComboBoxItem>Newest</ComboBoxItem>
-					<ComboBoxItem>Oldest</ComboBoxItem>
+				<ComboBox SelectedItem="{Binding SortCriteria}" VerticalAlignment="Center" FontSize="16" Width="120">
+					<ComboBoxItem Content="" Width="120" Height="30"></ComboBoxItem>
+					<ComboBoxItem Content="Name">Name</ComboBoxItem>
+					<ComboBoxItem Content="Group">Group</ComboBoxItem>
+					<ComboBoxItem Content="Newest">Newest</ComboBoxItem>
+					<ComboBoxItem Content="Oldest">Oldest</ComboBoxItem>
 				</ComboBox>
 			</StackPanel>
 
 			<!-- Filter by -->
 			<StackPanel Orientation="Horizontal" Grid.Column="1">
 				<TextBlock Text="Filter by:" FontSize="18" VerticalAlignment="Center" Margin="10 0"/>
-				<ComboBox SelectedIndex="0" VerticalAlignment="Center" FontSize="16">
-					<ComboBoxItem>Group</ComboBoxItem>
+				<ComboBox ItemsSource="{Binding Groups}" SelectedItem="{Binding FilterCriteria, Mode=TwoWay}" VerticalAlignment="Center" FontSize="16" Width="120">
 				</ComboBox>
 			</StackPanel>
 
@@ -37,7 +37,8 @@
 					 Watermark="Search Api key"
 					 Foreground="Black"
 					 CaretBrush="Black"
-					 FontSize="18"/>
+					 FontSize="18"
+					 Text="{Binding SearchQuery}"/>
 		</Grid>
 
 		<!-- Loading indicator -->

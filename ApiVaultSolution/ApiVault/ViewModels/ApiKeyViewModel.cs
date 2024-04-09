@@ -29,11 +29,20 @@ namespace ApiVault.ViewModels
             get => _group;
         }
 
-        public ApiKeyViewModel(string name, string key, string apiGroup)
+        // ReplaceDate
+        private string? _replaceDate;
+        public string? ReplaceDate
+        {
+            set => this.RaiseAndSetIfChanged(ref _replaceDate, value);
+            get => _replaceDate;
+        }
+
+        public ApiKeyViewModel(string name, string key, string apiGroup, string apiReplaceData)
         {
             ApiKeyName = name;
             ApiKey = key;
             Group = apiGroup;
+            ReplaceDate = apiReplaceData;
         }
 
     }

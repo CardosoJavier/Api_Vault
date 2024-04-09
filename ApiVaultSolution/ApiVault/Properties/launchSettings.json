@@ -3,9 +3,14 @@
     "ApiVault": {
       "commandName": "Project",
       "environmentVariables": {
-        "CLIENT": "GeHsOayJgjHkcTNQynkFnOyy",
-        "SECRET": "2uAeXfU6FO07OT1Phrgn,f9r1pT0onmn3KvIEh+ajE56qr680xvyZmrUbk_q2C6Hj+o50uw1b1-zX.1cvy0ojB_PYzCen-A8Xn8-7Wlo6jhigsjFsFqKqnXq4pxE6qbi",
-        "CLUSTER": "apivault_space"
+        "CLIENT": "eTInSYJfnSaNqFSSoTiYBTZu",
+        "SECRET": "eaKhIh.wHiqof-n.hSlGLW1scat3REOZDqwdNURZ3fPD7C_u-KwPb2YK1JM+GnhBs+Sx+LIoT_oTSDYRpn+7,abjvm3ni+acaSe1b-XLqHZ+LMjAJkyrYWYawBJv2BXr",
+        "CLUSTER": "apivault_space",
+
+        "ASTRA_DB_ID": "18b4a73a-48a7-48e1-95b1-579a10674021",
+        "ASTRA_DB_REGION": "us-east1",
+        "ASTRA_DB_KEYSPACE": "apivault_space",
+        "ASTRA_DB_APPLICATION_TOKEN": "AstraCS:eTInSYJfnSaNqFSSoTiYBTZu:67162ed78f7ed38b0e049e2be3c01c5b9de0301e966948504fe3ddd359a5a8b6"
       }
     }
   }
