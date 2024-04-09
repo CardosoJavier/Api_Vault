@@ -69,6 +69,15 @@
 					Background="#1A1C24">
 					<ic:SymbolIcon Symbol="Clipboard" IsFilled="False" FontSize="30"/>
 				</Button>
+
+				<Button
+					Height="50"
+					Width="50"
+					Background="#1A1C24"
+					Command="{Binding DeleteKey}"
+					>
+					<ic:SymbolIcon Symbol="Delete" IsFilled="False" FontSize="30"/>
+				</Button>
 			</StackPanel>
 		</DockPanel>
 		<!-- Detais -->

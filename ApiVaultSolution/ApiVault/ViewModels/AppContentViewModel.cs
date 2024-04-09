@@ -7,6 +7,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using System;
 using System.Collections.ObjectModel;
+using System.Reflection.Metadata;
 
 namespace ApiVault.ViewModels
 {
@@ -50,6 +51,18 @@ namespace ApiVault.ViewModels
         {
             if (value == null) return;
             CurrentPage = _viewModelFactory.CreateViewModel(value.ViewModelType);
+        }
+
+        [RelayCommand]
+        private void Logout()
+        {
+            // Perform any necessary cleanup here
+            // For example, clear session data or reset user preferences
+            // _userSessionService.Logout(); // Assuming you have a logout method in your user session service
+
+            // Navigate back to the Login Page
+            CurrentPage = _viewModelFactory.CreateViewModel(typeof(LoginViewModel));
+            
         }
     }
 

@@ -17,5 +17,10 @@ namespace ApiVault.Services
     {
         // Interface variables
         public string Username {  set; get; }
+
+        public void Logout()
+        {
+            Username = string.Empty;
+        }
     }
 }

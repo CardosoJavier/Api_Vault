@@ -1,14 +1,11 @@
 ﻿using ApiVault.DataModels;
 using ApiVault.Services;
 using Avalonia.Controls;
-using Avalonia.Threading;
 using Cassandra;
-using DynamicData;
 using ReactiveUI;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Data.Common;
 using System.Diagnostics;
 using System.Linq;
 using System.Reactive;
@@ -131,7 +128,7 @@ namespace ApiVault.ViewModels
         {
             await Task.Run(() =>
             {
-                var query = session.Prepare("SELECT apiname, apikey, apigroup, replacedate FROM apikeys WHERE username = ? ALLOW FILTERING");
+                var query = session.Prepare("SELECT keyid, apiname, apikey, apigroup, replacedate FROM apikeys WHERE username = ? ALLOW FILTERING");
                 var apiKeys = session.Execute(query.Bind(_userSessionService.Username));
 
                 // TODO: Print table
@@ -141,12 +138,13 @@ namespace ApiVault.ViewModels
                 // Iterate through the RowSet and print each row
                 foreach (var row in apiKeys)
                 {
+                    var keyId = row.GetValue<Guid>("keyid");
                     var apiName = row.GetValue<string>("apiname");
                     var apiKey = row.GetValue<string>("apikey");
                     var apiGroup = row.GetValue<string>("apigroup");
                     var replaceDate = row.GetValue<DateTimeOffset>("replacedate").ToString("yyyy-MM-dd HH:mm:ss");
 
-                    ApiKeysList.Add(new ApiKeyViewModel(apiName, apiKey, apiGroup, replaceDate));
+                    ApiKeysList.Add(new ApiKeyViewModel(keyId, apiName, apiKey, apiGroup, replaceDate));
                     if (!Groups.Contains(apiGroup))
                     {
                         Groups.Add(apiGroup);
@@ -165,6 +163,9 @@ namespace ApiVault.ViewModels
         {
 
             // Example filter application (implement based on actual properties and needs)
+            ApiKeysList.Clear();
+            await GetAllApiKeys();
+
             var searchValues = ApiKeysList
                 .Where(apiKey => string.IsNullOrEmpty(SearchQuery) || apiKey.ApiKeyName.Contains(SearchQuery, StringComparison.OrdinalIgnoreCase))
                 .ToList();
@@ -248,13 +249,14 @@ namespace ApiVault.ViewModels
         // Reset filters
         private async Task ResetFilters()
         {
+            ApiKeysList.Clear();
+
             // Reset all filtering and sorting criteria
             FilterCriteria = string.Empty; // or your default filter criteria
             SortCriteria = null; // or your default sort criteria
-            SearchQuery = string.Empty; // reset the search query
+            SearchQuery = null; // reset the search query
 
             // Refresh the list
-            ApiKeysList.Clear();
             await GetAllApiKeys();
         }
 

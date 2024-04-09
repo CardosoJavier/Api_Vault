@@ -1,10 +1,10 @@
 ﻿using ApiVault.DataModels;
 using ApiVault.Services;
+using Avalonia.Controls;
 using Cassandra;
 using ReactiveUI;
 using System;
 using System.Collections.ObjectModel;
-using System.Data.Common;
 using System.Diagnostics;
 using System.Linq;
 using System.Numerics;
@@ -38,29 +38,50 @@ namespace ApiVault.ViewModels
             }
         }
 
-        public ObservableCollection<string> _apiGroups = new ObservableCollection<string>
-        {
-            "Group 1",
-            "Group 2",
-            "Group 3"
-        };
+        public ObservableCollection<string>? Groups { get; }
 
-        public ObservableCollection<string> ApiGroups
+        private string? _selectedGroup;
+        public string? SelectedGroup
         {
-            get => _apiGroups;
-            set => this.RaiseAndSetIfChanged(ref _apiGroups, value);
-        }
-
-        private string? apiGroup;
-        public string? ApiGroup
-        {
-            get => apiGroup;
+            get => _selectedGroup;
             set
             {
-                this.RaiseAndSetIfChanged(ref apiGroup, value);
-                UpdateCanSubmit();
+                if (value != null)
+                {
+                    this.RaiseAndSetIfChanged(ref _selectedGroup, value);
+                    // If a group is selected, clear the NewGroup
+                    NewGroup = string.Empty;
+                    UpdateCanSubmit();
+                }
+                else
+                {
+                    // This handles clearing the selection or resetting filters
+                    this.RaiseAndSetIfChanged(ref _selectedGroup, value);
+                }
             }
         }
+
+        private string? _newGroup;
+        public string? NewGroup
+        {
+            get => _newGroup;
+            set
+            {
+                // Only proceed if the new value is different from the current one
+                if (_newGroup != value)
+                {
+                    this.RaiseAndSetIfChanged(ref _newGroup, value);
+                    // If a new group is typed, clear the selected group
+                    if (!string.IsNullOrWhiteSpace(value))
+                    {
+                        SelectedGroup = null;
+                    }
+                    UpdateCanSubmit();
+                }
+            }
+        }
+
+        
 
         private string statusMessage;
         public string StatusMessage
@@ -85,6 +106,8 @@ namespace ApiVault.ViewModels
             dbConnection = new AstraDbConnection();
             InitializeAsync();
 
+            Groups = new ObservableCollection<string>();
+
             AddKeyCommand = ReactiveCommand.CreateFromTask(AddKey);
         }
 
@@ -102,16 +125,43 @@ namespace ApiVault.ViewModels
             {
                 await dbConnection.InitializeConnection();
                 session = await dbConnection.GetSession();
+
+                await GetApiKeyGroups();
             }
+        }
+
+        private async Task GetApiKeyGroups()
+        {
+            await Task.Run(() =>
+            {
+                var query = session.Prepare("SELECT apigroup FROM apikeys WHERE username = ? ALLOW FILTERING");
+                var apiKeys = session.Execute(query.Bind(_userSessionService.Username));
+
+                // Iterate through the RowSet and print each row
+                Groups.Add(string.Empty);
+                foreach (var row in apiKeys)
+                {
+                    var apiGroup = row.GetValue<string>("apigroup");
+
+                    if (!Groups.Contains(apiGroup))
+                    {
+                        Groups.Add(apiGroup);
+                    }
+                }
+
+                Groups.OrderDescending();
+            });
         }
 
         private async Task AddKey() 
         {
+
             var tryInsert = await InsertKey();
 
             if (tryInsert)
             {
-                ApiGroup = string.Empty;
+                SelectedGroup = string.Empty;
+                NewGroup = string.Empty;
                 ApiKey = string.Empty;
                 ApiName = string.Empty;
 
@@ -137,8 +187,20 @@ namespace ApiVault.ViewModels
                     // Expiration date
                     var expirationDate = GenerateExpirationDate();
 
+                    // Get group
+                    var apiGroups = "No group";
+                    if (!string.IsNullOrEmpty(NewGroup))
+                    {
+                        apiGroups = NewGroup;
+                    }
+
+                    else
+                    {
+                        apiGroups = SelectedGroup;
+                    }
+
                     var inserteUser = session.Prepare("INSERT INTO apivault_space.apikeys (keyid,  apigroup, apikey, apiname, replacedate, username) VALUES (?, ?, ?, ?, ?, ?)");
-                    session.Execute(inserteUser.Bind(UUID, apiGroup, apiKey, apiName, expirationDate, _userSessionService.Username));
+                    session.Execute(inserteUser.Bind(UUID, apiGroups, apiKey, apiName, expirationDate, _userSessionService.Username));
 
                     // Verify added key
                     var veryfyNewKey = session.Prepare("SELECT * FROM apivault_space.apikeys WHERE keyid = ?");
@@ -167,8 +229,8 @@ namespace ApiVault.ViewModels
         private void UpdateCanSubmit()
         {
             CanSubmit = !string.IsNullOrWhiteSpace(ApiName)
-                        && !string.IsNullOrWhiteSpace(ApiKey)
-                        && !string.IsNullOrWhiteSpace(ApiGroup);
+                && !string.IsNullOrWhiteSpace(ApiKey)
+                && ((SelectedGroup != null && SelectedGroup != string.Empty) || !string.IsNullOrWhiteSpace(NewGroup));
 
             this.RaisePropertyChanged(nameof(CanSubmit));
         }

@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace ApiVault.ViewModels
 {
-    public class LoginViewModel : ReactiveObject
+    public class LoginViewModel : ViewModelBase
     {
         /* - - - - - - - - - - Binding View Variables - - - - - - - - - - */
         private string? username;
