@@ -12,7 +12,7 @@
 	<Panel Margin="15">
 		
 		<!-- Search and filter tools -->
-		<Grid ColumnDefinitions="*,*,*" RowDefinitions="Auto" Margin="4">
+		<Grid ColumnDefinitions="*,*,*,*" RowDefinitions="Auto" Margin="4">
 			<!-- Sort by -->
 			<StackPanel Orientation="Horizontal" Grid.Column="0">
 				<TextBlock Text="Sort by: " FontSize="18" VerticalAlignment="Center" Margin="10 0"/>
@@ -41,7 +41,22 @@
 					 Foreground="Black"
 					 CaretBrush="Black"
 					 FontSize="18"
+					 Width="450"
 					 Text="{Binding SearchQuery}"/>
+		
+			<!-- Reset button -->
+			<Button Grid.Column="3"
+					Margin="150 0 0 0"
+					Width="150"
+					Height="35"
+					Command="{Binding ResetFiltersCommand}">
+				<TextBlock HorizontalAlignment="Center"
+						   VerticalAlignment="Center"
+						   FontSize="18">
+					Reset Filters
+				</TextBlock>
+			</Button>
+		
 		</Grid>
 
 		<!-- Loading indicator -->

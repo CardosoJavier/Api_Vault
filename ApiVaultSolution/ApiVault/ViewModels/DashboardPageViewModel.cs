@@ -11,6 +11,7 @@ using System.Collections.ObjectModel;
 using System.Data.Common;
 using System.Diagnostics;
 using System.Linq;
+using System.Reactive;
 using System.Threading.Tasks;
 
 namespace ApiVault.ViewModels
@@ -44,9 +45,16 @@ namespace ApiVault.ViewModels
             get => _filterCriteria;
             set
             {
-                Debug.WriteLine($"Filter: {value}");
-                this.RaiseAndSetIfChanged(ref _filterCriteria, value);
-                _ = ApplyFilterAsync();
+                if (value != null)
+                {
+                    Debug.WriteLine($"Filter: {value}");
+                    this.RaiseAndSetIfChanged(ref _filterCriteria, value);
+                    
+                    if (value != string.Empty) 
+                    {
+                        _ = ApplyFilterAsync();
+                    }
+                }
             }
         }
 
@@ -58,9 +66,17 @@ namespace ApiVault.ViewModels
             set
             {
                 // The value was changed, now do something as a result
-                Debug.WriteLine($"sort: {value.Content.ToString()}");
-                this.RaiseAndSetIfChanged(ref _sortCriteria, value);
-                _ = ApplySortAsync();
+                if ( value != null )
+                {
+                    Debug.WriteLine($"sort: {value.Content.ToString()}");
+                    this.RaiseAndSetIfChanged(ref _sortCriteria, value);
+                    _ = ApplySortAsync();
+                }
+
+                else
+                {
+                    this.RaiseAndSetIfChanged(ref _sortCriteria, null);
+                }
             }
         }
 
@@ -70,11 +86,22 @@ namespace ApiVault.ViewModels
             get => _searchQuery;
             set
             {
-                Debug.WriteLine($"search: {value}");
-                this.RaiseAndSetIfChanged(ref _searchQuery, value);
-                _ = ApplySearch();
+                if (value != null)
+                {
+                    Debug.WriteLine($"search: {value}");
+                    this.RaiseAndSetIfChanged(ref _searchQuery, value);
+                    
+                    if ( value != string.Empty)
+                    {
+                        _ = ApplySearch();
+                    }
+                }
             }
         }
+
+        // Commands
+        public ReactiveCommand<Unit, Unit> ResetFiltersCommand { get; }
+
 
         // - - - - - - - - - - Constructors - - - - - - - -  - - 
         public DashboardPageViewModel(IUserSessionService userSessionService)
@@ -85,6 +112,8 @@ namespace ApiVault.ViewModels
             dbConnection = new AstraDbConnection();
 
             InitializeAsync();
+
+            ResetFiltersCommand = ReactiveCommand.CreateFromTask(ResetFilters);
 
             ApiKeysList = new ObservableCollection<ApiKeyViewModel>();
             Groups = new ObservableCollection<string>();
@@ -203,6 +232,20 @@ namespace ApiVault.ViewModels
                 ApiKeysList.Add(item);
             }
         }
+
+        // Reset filters
+        private async Task ResetFilters()
+        {
+            // Reset all filtering and sorting criteria
+            FilterCriteria = string.Empty; // or your default filter criteria
+            SortCriteria = null; // or your default sort criteria
+            SearchQuery = string.Empty; // reset the search query
+
+            // Refresh the list
+            ApiKeysList.Clear();
+            await GetAllApiKeys();
+        }
+
 
     }
 }
