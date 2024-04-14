@@ -7,6 +7,7 @@ using Newtonsoft.Json.Linq;
 using ApiVault.DataModels;
 using System.Text.Json;
 using System.Text;
+using System.Text.Json.Nodes;
 
 public class AstraDbService
 {
@@ -98,6 +99,47 @@ public class AstraDbService
             Debug.WriteLine(ex);
             return null;
         }
+    }
+
+    public async Task<bool> isUsernameAvailable(string username)
+    {
+        try
+        {
+            SetHeaders();
+
+            // route and headers
+            string endpoint = $"https://{_astraDbId}-{_astraDbRegion}.apps.astra.datastax.com/api/rest/v2/keyspaces/{_astraDbKeyspace}/users/{username}";
+
+            // send get request
+            HttpResponseMessage response = await _httpClient.GetAsync(endpoint);
+
+            if (response.IsSuccessStatusCode)
+            {
+                string responseContent = await response.Content.ReadAsStringAsync();
+
+                JObject userContent = JObject.Parse(responseContent);
+
+                if (int.Parse((string)userContent["count"]) == 0)
+                {
+                    return true;
+                }
+
+                return false;
+            }
+
+            else
+            {
+                Debug.WriteLine($"Error fetching credentials: {response.StatusCode}");
+                return false;
+            }
+        }
+
+        catch (Exception ex)
+        {
+            Debug.WriteLine(ex);
+            return false;
+        }
+
     }
 
     public async Task<string?> GetApiKeys(string tableName, string username)

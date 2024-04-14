@@ -24,8 +24,8 @@ namespace ApiVault.ViewModels
         private static readonly Regex hasSpecialChar = new Regex(@"[!@#$%^&*()_+<>?]+", RegexOptions.Compiled);
 
         // New user variables for Data Binding
-        private string username;
-        public string Username
+        private string? username;
+        public string? Username
         {  get => username;
             set
             {
@@ -34,8 +34,8 @@ namespace ApiVault.ViewModels
             }
         }
 
-        private string email;
-        public string Email 
+        private string? email;
+        public string? Email 
         {
             get => email;
             set
@@ -46,8 +46,8 @@ namespace ApiVault.ViewModels
 
         }
 
-        private string password;
-        public string Password
+        private string? password;
+        public string? Password
         {
             get => password;
             set
@@ -57,8 +57,8 @@ namespace ApiVault.ViewModels
             }
         }
 
-        private string confirmpassword;
-        public string ConfirmPassword
+        private string? confirmpassword;
+        public string? ConfirmPassword
         {
             get => confirmpassword;
             set
@@ -68,8 +68,8 @@ namespace ApiVault.ViewModels
             }
         }
 
-        private string phone;
-        public string Phone 
+        private string? phone;
+        public string? Phone 
         {
             get => phone;
             set 
@@ -79,19 +79,14 @@ namespace ApiVault.ViewModels
             }
         }
 
-        public bool CanSubmit { get; set; } = false;
-
-        // Database variables
-        private AstraDbConnection dbConnection;
-        private ISession InitPoolSession;
-
-        // public string StatusMessage { get; set; }
-        private string statusMessage;
-        public string StatusMessage
+        private string? statusMessage;
+        public string? StatusMessage
         {
             get => statusMessage;
             set => this.RaiseAndSetIfChanged(ref statusMessage, value);
         }
+
+        public bool CanSubmit { get; set; } = false;
 
         /* - - - - - - - - - - HTTP Client - - - - - - - - - - */
         HttpClient httpClient = new HttpClient();
@@ -111,8 +106,6 @@ namespace ApiVault.ViewModels
         public SignUpViewModel()
         {
             SignUpCommand = ReactiveCommand.CreateFromTask(SignUp);
-            dbConnection = new AstraDbConnection();
-            InitializeAsync();
         }
 
         public SignUpViewModel(IScreen screen)
@@ -120,20 +113,7 @@ namespace ApiVault.ViewModels
             HostScreen = screen;
         }
 
-        ~SignUpViewModel()
-        {
-            Debug.Print("Connection Ended!");
-            dbConnection.DisposeDb();
-        }
         /* - - - - - - - - - - - Methods - - - - - - - - - - - */
-
-        public async Task InitializeAsync()
-        {
-            // connect to database
-            await dbConnection.InitializeConnection();
-            // init pool session
-            InitPoolSession = await dbConnection.GetSession();
-        }
 
         /*
          * Create new user account
@@ -141,35 +121,38 @@ namespace ApiVault.ViewModels
         private async Task SignUp()
         {
             // Check for empty fields
-            if (await verifyInput(Email, Username, Password, ConfirmPassword, Phone))
+            if (Email != null && Username != null && Password != null && ConfirmPassword != null && Phone != null)
             {
-                // Insert user logic here
-               try
+                if (await verifyInput(Email, Username, Password, ConfirmPassword, Phone))
                 {
-                    var success = await InsertUser(Email, Username, Password, Phone);
-                    if (success)
+                    // Insert user logic here
+                    try
                     {
-                        // TODO: Clear fields after successfull sign up
-                        Email = string.Empty;
-                        Username = string.Empty;
-                        Password = string.Empty;
-                        ConfirmPassword = string.Empty;
-                        Phone = string.Empty;
+                        var success = await InsertUser(Email, Username, Password, Phone);
+                        if (success)
+                        {
+                            // TODO: Clear fields after successfull sign up
+                            Email = string.Empty;
+                            Username = string.Empty;
+                            Password = string.Empty;
+                            ConfirmPassword = string.Empty;
+                            Phone = string.Empty;
 
-                        // Navigate to sign in or update UI accordingly
-                        StatusMessage = "User created successfully";
-                        Debug.Print("User created successfully");
+                            // Navigate to sign in or update UI accordingly
+                            StatusMessage = "User created successfully";
+                            Debug.Print("User created successfully");
+                        }
+                        else
+                        {
+                            StatusMessage = "Failed to create user";
+                            Debug.Print("Failed to create user");
+                        }
                     }
-                    else
+
+                    catch (Exception ex)
                     {
-                        StatusMessage = "Failed to create user";
-                        Debug.Print("Failed to create user");
+                        Debug.Print($"Sign Up exception: {ex}");
                     }
-                }
-
-                catch (Exception ex)
-                {
-                    Debug.Print($"Sign Up exception: {ex}");
                 }
             }
         }
@@ -232,9 +215,9 @@ namespace ApiVault.ViewModels
             }
 
             // check username availability
-            if (await checkUsernameAvailability(Username, InitPoolSession))
+            if (await isUsernameAvailable(Username) == false)
             {
-                StatusMessage = Username + " is already taken";
+                StatusMessage = $"{Username} is already taken";
                 Debug.Print("Username + \" is already taken\"");
                 return false;
             }
@@ -290,19 +273,16 @@ namespace ApiVault.ViewModels
         }
 
         // Check username availability
-        private async Task<bool> checkUsernameAvailability(string username, ISession session)
+        private async Task<bool> isUsernameAvailable(string username)
         {
-            var reponse = Task.Run(() =>
+            if (astraDbId != null && astraDbRegion != null && astraDbKeyspace != null && astraDbApplicationToken != null)
             {
-                // search username queries
-                var seachUsernameQuery = session.Prepare("SELECT * FROM Users WHERE username = ?");
-                var searchUsernameResult = session.Execute(seachUsernameQuery.Bind(username));
+                AstraDbService dbService = new AstraDbService(httpClient, astraDbId, astraDbRegion, astraDbKeyspace, astraDbApplicationToken);
 
-                // return search result
-                return searchUsernameResult.Any();
-            });
+                return await dbService.isUsernameAvailable(username);
+            }
 
-            return await reponse;
+            return false;
         }
 
         // Verify email
