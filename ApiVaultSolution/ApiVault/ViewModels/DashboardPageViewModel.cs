@@ -2,12 +2,14 @@
 using ApiVault.Services;
 using Avalonia.Controls;
 using Cassandra;
+using Newtonsoft.Json.Linq;
 using ReactiveUI;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
+using System.Net.Http;
 using System.Reactive;
 using System.Threading.Tasks;
 
@@ -19,17 +21,13 @@ namespace ApiVault.ViewModels
         private readonly IUserSessionService _userSessionService;
         public string? UserName { get; set; } = string.Empty;
 
-        // Db connection
-        private AstraDbConnection dbConnection;
-        private ISession session;
-
         // Display keys
         public ObservableCollection<ApiKeyViewModel> ApiKeysList { get; }
         public ObservableCollection<string> Groups { get; }
 
 
-        private bool _isLoading;
-        public bool IsLoading
+        private bool? _isLoading;
+        public bool? IsLoading
         {
             get => _isLoading;
             set => this.RaiseAndSetIfChanged(ref _isLoading, value);
@@ -56,14 +54,14 @@ namespace ApiVault.ViewModels
         }
 
 
-        private ComboBoxItem _sortCriteria;
-        public ComboBoxItem SortCriteria
+        private ComboBoxItem? _sortCriteria;
+        public ComboBoxItem? SortCriteria
         {
             get => _sortCriteria;
             set
             {
                 // The value was changed, now do something as a result
-                if ( value != null )
+                if (value != null && value.Content is not null)
                 {
                     Debug.WriteLine($"sort: {value.Content.ToString()}");
                     this.RaiseAndSetIfChanged(ref _sortCriteria, value);
@@ -77,8 +75,8 @@ namespace ApiVault.ViewModels
             }
         }
 
-        private string _searchQuery = string.Empty;
-        public string SearchQuery
+        private string? _searchQuery = string.Empty;
+        public string? SearchQuery
         {
             get => _searchQuery;
             set
@@ -92,70 +90,78 @@ namespace ApiVault.ViewModels
             }
         }
 
+        // Http connection
+        /* - - - - - - - - - - HTTP Client - - - - - - - - - - */
+        HttpClient httpClient = new HttpClient();
+
+        private readonly string? astraDbId = Environment.GetEnvironmentVariable("ASTRA_DB_ID");
+        private readonly string? astraDbRegion = Environment.GetEnvironmentVariable("ASTRA_DB_REGION");
+        private readonly string? astraDbKeyspace = Environment.GetEnvironmentVariable("ASTRA_DB_KEYSPACE");
+        private readonly string? astraDbApplicationToken = Environment.GetEnvironmentVariable("ASTRA_DB_APPLICATION_TOKEN");
+        private readonly string? _table = "apikeys";
+
         // Commands
         public ReactiveCommand<Unit, Unit> ResetFiltersCommand { get; }
 
 
         // - - - - - - - - - - Constructors - - - - - - - -  - - 
         public DashboardPageViewModel(IUserSessionService userSessionService)
-        {
+        {   
+            // session
             _userSessionService = userSessionService;
             UserName = _userSessionService.Username;
 
-            dbConnection = new AstraDbConnection();
-
-            InitializeAsync();
-
+            // commands
             ResetFiltersCommand = ReactiveCommand.CreateFromTask(ResetFilters);
-
+            
+            // Dashboard Lists
             ApiKeysList = new ObservableCollection<ApiKeyViewModel>();
             Groups = new ObservableCollection<string>();
 
         }
 
         // - - - - - - - - - - Methods - - - - - - - -  - - 
-        // Connect to database
-        public async Task InitializeAsync()
-        {
-            await dbConnection.InitializeConnection();
-            session = await dbConnection.GetSession();
-            await GetAllApiKeys();
-            IsLoading = false;
-        }
-
-        
         private async Task GetAllApiKeys()
         {
-            await Task.Run(() =>
+            if (astraDbId != null && astraDbRegion != null && astraDbKeyspace != null && astraDbApplicationToken != null && _table != null && _userSessionService.Username != null)
             {
-                var query = session.Prepare("SELECT keyid, apiname, apikey, apigroup, replacedate FROM apikeys WHERE username = ? ALLOW FILTERING");
-                var apiKeys = session.Execute(query.Bind(_userSessionService.Username));
+                AstraDbService dbService = new AstraDbService(httpClient, astraDbId, astraDbRegion, astraDbKeyspace, astraDbApplicationToken);
+                string getContent = await dbService.GetApiKeys(_table, _userSessionService.Username);
 
-                // TODO: Print table
-                // Print header
-                // Debug.WriteLine($"{"Api Name",-30} {"Api Key",-36} {"Api Group",-20} {"Replace Date",-30}");
+                // Convert content to JSON
+                JObject keys = JObject.Parse(getContent);
 
-                // Iterate through the RowSet and print each row
-                foreach (var row in apiKeys)
+                // Get API key object' data
+                if (getContent != null)
                 {
-                    var keyId = row.GetValue<Guid>("keyid");
-                    var apiName = row.GetValue<string>("apiname");
-                    var apiKey = row.GetValue<string>("apikey");
-                    var apiGroup = row.GetValue<string>("apigroup");
-                    var replaceDate = row.GetValue<DateTimeOffset>("replacedate").ToString("yyyy-MM-dd HH:mm:ss");
-
-                    ApiKeysList.Add(new ApiKeyViewModel(keyId, apiName, apiKey, apiGroup, replaceDate));
-                    if (!Groups.Contains(apiGroup))
+                    for (int i = 0; i < int.Parse((string)keys["count"]); i++)
                     {
-                        Groups.Add(apiGroup);
-                    }
+                        var keyId = (Guid)keys["data"][i]["keyid"];
+                        var apiName = (string)keys["data"][i]["apiname"];
+                        var apiKey = (string)keys["data"][i]["apikey"];
+                        var apiGroup = (string)keys["data"][i]["apigroup"];
+                        var replaceDate = (string)keys["data"][i]["replacedate"];
 
-                    // Print table row
-                    // Debug.WriteLine($"{apiName,-30} {apiKey,-36} {apiGroup,-20} {replaceDate,-30}");
+                        ApiKeysList.Add(new ApiKeyViewModel(keyId, apiName, apiKey, apiGroup, replaceDate));
+
+                        if (!Groups.Contains(apiGroup))
+                        {
+                            Groups.Add(apiGroup);
+                        }
+                    }
                 }
 
-                Groups.Order();
-            });
+                else
+                {
+                    Debug.WriteLine("Null content from API fetch");
+                }
+            }
+
+            else
+            {
+                Debug.WriteLine("Null variables in request");
+                return;
+            }
         }
 
         // Search method
@@ -218,31 +224,35 @@ namespace ApiVault.ViewModels
         {
             List<ApiKeyViewModel> sortedList = new();
             Debug.WriteLine(_sortCriteria);
-            switch (_sortCriteria.Content.ToString())
-            {
-                case "Name":
-                    sortedList = ApiKeysList.OrderBy(apiKey => apiKey.ApiKeyName, StringComparer.Ordinal).ToList();
-                    break;
-                case "Group":
-                    // Ordering by ASCII values explicitly
-                    sortedList = ApiKeysList.OrderBy(apiKey => apiKey.Group, StringComparer.Ordinal).ToList();
-                    break;
-                case "Newest":
-                    // Directly using DateTimeOffset for comparison, assuming ReplaceDate is already a DateTimeOffset
-                    sortedList = ApiKeysList.OrderByDescending(apiKey => DateTimeOffset.ParseExact(apiKey.ReplaceDate, "yyyy-MM-dd HH:mm:ss", null)).ToList();
-                    break;
-                case "Oldest":
-                    sortedList = ApiKeysList.OrderBy(apiKey => DateTimeOffset.ParseExact(apiKey.ReplaceDate, "yyyy-MM-dd HH:mm:ss", null)).ToList();
-                    break;
-                default:
-                    sortedList = ApiKeysList.ToList();
-                    break;
-            }
 
-            ApiKeysList.Clear();
-            foreach (var item in sortedList)
+            if (_sortCriteria is not null && _sortCriteria.Content is not null)
             {
-                ApiKeysList.Add(item);
+                switch (_sortCriteria.Content.ToString())
+                {
+                    case "Name":
+                        sortedList = ApiKeysList.OrderBy(apiKey => apiKey.ApiKeyName, StringComparer.Ordinal).ToList();
+                        break;
+                    case "Group":
+                        // Ordering by ASCII values explicitly
+                        sortedList = ApiKeysList.OrderBy(apiKey => apiKey.Group, StringComparer.Ordinal).ToList();
+                        break;
+                    case "Newest":
+                        // Directly using DateTimeOffset for comparison, assuming ReplaceDate is already a DateTimeOffset
+                        sortedList = ApiKeysList.OrderByDescending(apiKey => DateTimeOffset.ParseExact(apiKey.ReplaceDate, "yyyy-MM-dd HH:mm:ss", null)).ToList();
+                        break;
+                    case "Oldest":
+                        sortedList = ApiKeysList.OrderBy(apiKey => DateTimeOffset.ParseExact(apiKey.ReplaceDate, "yyyy-MM-dd HH:mm:ss", null)).ToList();
+                        break;
+                    default:
+                        sortedList = ApiKeysList.ToList();
+                        break;
+                }
+
+                ApiKeysList.Clear();
+                foreach (var item in sortedList)
+                {
+                    ApiKeysList.Add(item);
+                }
             }
         }
 
@@ -252,9 +262,9 @@ namespace ApiVault.ViewModels
             ApiKeysList.Clear();
 
             // Reset all filtering and sorting criteria
-            FilterCriteria = string.Empty; // or your default filter criteria
-            SortCriteria = null; // or your default sort criteria
-            SearchQuery = null; // reset the search query
+            FilterCriteria = string.Empty;
+            SortCriteria = null; 
+            SearchQuery = null; 
 
             // Refresh the list
             await GetAllApiKeys();

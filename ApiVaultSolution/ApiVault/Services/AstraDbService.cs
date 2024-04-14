@@ -21,6 +21,13 @@ public class AstraDbService
         _astraDbApplicationToken = astraDbApplicationToken;
     }
 
+    private void SetHeaders()
+    {
+        _httpClient.DefaultRequestHeaders.Clear();
+        _httpClient.DefaultRequestHeaders.Add("x-cassandra-token", _astraDbApplicationToken);
+        _httpClient.DefaultRequestHeaders.Add("Accept", "application/json");
+    }
+
     public async Task<bool> DeleteApiKeyAsync(string tableName, string primaryKeyValue)
     {
         try
@@ -70,7 +77,7 @@ public class AstraDbService
 
             else
             {
-                Debug.WriteLine($"Error getting credentials: {response.StatusCode}");
+                Debug.WriteLine($"Error fetching credentials: {response.StatusCode}");
                 return null;
             }
         }
@@ -82,11 +89,39 @@ public class AstraDbService
         }
     }
 
-    private void SetHeaders()
+    public async Task<string?> GetApiKeys(string tableName, string username)
     {
-        _httpClient.DefaultRequestHeaders.Clear();
-        _httpClient.DefaultRequestHeaders.Add("x-cassandra-token", _astraDbApplicationToken);
-        _httpClient.DefaultRequestHeaders.Add("Accept", "application/json");
-    }
+        try
+        {
+            // set headers
+            SetHeaders();
 
+            // link and query
+            string endpoint = $"https://{_astraDbId}-{_astraDbRegion}.apps.astra.datastax.com/api/rest/v2/keyspaces/{_astraDbKeyspace}/{tableName}/rows";
+            string query = $"?where={{\"user_id\":{{\"$eq\":\"{username}\"}}}}";
+            string fullRoute = endpoint + query;
+
+            // Make request
+            HttpResponseMessage response = await _httpClient.GetAsync(fullRoute);
+
+            if ( response.IsSuccessStatusCode )
+            {
+                return await response.Content.ReadAsStringAsync();
+            }
+
+            else
+            {
+                Debug.WriteLine($"Failed to fetch keys: {response.StatusCode}");
+                return null;
+            }
+
+        }
+
+        catch (Exception e)
+        {
+            Debug.WriteLine(e);
+            return null;
+        }
+
+    }
 }
