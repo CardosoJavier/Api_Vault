@@ -1,10 +1,9 @@
-﻿using ApiVault.DataModels;
-using ApiVault.Services;
-using Cassandra;
+﻿using ApiVault.Services;
+using Newtonsoft.Json.Linq;
 using ReactiveUI;
 using System;
 using System.Diagnostics;
-using System.Linq;
+using System.Net.Http;
 using System.Reactive;
 using System.Threading.Tasks;
 
@@ -12,7 +11,8 @@ namespace ApiVault.ViewModels
 {
     public class LoginViewModel : ViewModelBase
     {
-        /* - - - - - - - - - - Binding View Variables - - - - - - - - - - */
+
+        /* - - - - - - - - - - Binding variables - - - - - - - - - - */
         private string? username;
         public string? Username
         {
@@ -41,15 +41,20 @@ namespace ApiVault.ViewModels
             get => statusMessage;
             set => this.RaiseAndSetIfChanged(ref statusMessage, value);
         }
+
+        /* - - - - - - - - - - Events and session - - - - - - - - - - */
         public bool? CanSubmit { get; set; } = false;
-
-        private AstraDbConnection dbConnection;
-        private ISession InitPoolSession;
-
         public event EventHandler? LoginSuccessful;
-
         private readonly IUserSessionService _userSessionService;
 
+        /* - - - - - - - - - - HTTP Client - - - - - - - - - - */
+        HttpClient httpClient = new HttpClient();
+
+        private readonly string? astraDbId = Environment.GetEnvironmentVariable("ASTRA_DB_ID");
+        private readonly string? astraDbRegion = Environment.GetEnvironmentVariable("ASTRA_DB_REGION");
+        private readonly string? astraDbKeyspace = Environment.GetEnvironmentVariable("ASTRA_DB_KEYSPACE");
+        private readonly string? astraDbApplicationToken = Environment.GetEnvironmentVariable("ASTRA_DB_APPLICATION_TOKEN");
+        private readonly string _table = "users";
 
         /* - - - - - - - - - - Constructors - - - - - - - - - - */
         public LoginViewModel(IUserSessionService userSessionService)
@@ -59,8 +64,6 @@ namespace ApiVault.ViewModels
 
             // initialze database connection
             LoginCommand = ReactiveCommand.CreateFromTask(Login);
-            dbConnection = new AstraDbConnection();
-            InitializeAsync();
         }
 
         /* - - - - - - - - - - - Commands - - - - - - - - - - - */
@@ -70,30 +73,34 @@ namespace ApiVault.ViewModels
 
         /* - - - - - - - - - - Methods - - - - - - - - - - */
 
-        // Connect to database
-        public async Task InitializeAsync()
-        {
-            await dbConnection.InitializeConnection();
-            InitPoolSession = await dbConnection.GetSession();
-        }
+        
 
         // Function that checks credentials
         private async Task Login()
         {
             // check if credentials are valid
-            bool validCredentials = await verifyCredentials(Username, Password);
-
-            // move to dashboard or display error message
-            if (validCredentials)
+            if(Username != null && Password != null)
             {
-                Debug.Print("Access granted");
-                _userSessionService.Username = username;
-                OnLoginSuccess();
+                bool validCredentials = await verifyCredentials(Username, Password);
+
+                // move to dashboard or display error message
+                if (validCredentials && username != null)
+                {
+                    Debug.Print("Access granted");
+                    _userSessionService.Username = username;
+                    OnLoginSuccess();
+                }
+
+                else
+                {
+                    StatusMessage = "Wrong username or password";
+                }
             }
 
             else
             {
-                StatusMessage = "Wrong username or password";
+                Debug.WriteLine("Username or passward are null");
+                return;
             }
         }
 
@@ -110,28 +117,48 @@ namespace ApiVault.ViewModels
                 throw new ArgumentException("Password cannot be null or empty");
             }
 
-            // Prepare the query
-            var query = "SELECT password FROM users WHERE username = ?";
-            var prepareStatement = await InitPoolSession.PrepareAsync(query).ConfigureAwait(false);
-            var bindStatement = prepareStatement.Bind(username);
-
-            // execute query
-            var exeQuery = await InitPoolSession.ExecuteAsync(bindStatement);
-
-            // get first row from returning set
-            var rowData =  exeQuery.FirstOrDefault();
-
-            if (rowData != null)
+            // Set up request
+            if (astraDbId != null && astraDbRegion != null && astraDbKeyspace != null && astraDbApplicationToken != null)
             {
-                // get password data
-                var rowPassword = rowData.GetValue<string>("password");
+                AstraDbService dbService = new AstraDbService(httpClient, astraDbId, astraDbRegion, astraDbKeyspace, astraDbApplicationToken);
 
-                // compare passwords
-                return BCrypt.Net.BCrypt.Verify(password, rowPassword);
+                // Get request
+                HttpContent? getCredentialRequest = await dbService.GetUserCredentials(_table, username);
+
+                // verify content
+                if (getCredentialRequest == null)
+                {
+                    Debug.WriteLine("Null GET request content");
+                    return false;
+                }
+
+                // Keep with verification
+                else
+                {
+                    // Get request content
+                    string getContent = await getCredentialRequest.ReadAsStringAsync();
+
+                    JObject credentials = JObject.Parse(getContent);
+
+                    // check for any result
+                    if (int.Parse((string)credentials["count"]) == 0)
+                    {
+                        return false;
+                    }
+
+                    else
+                    {
+                        // verify password
+                        return BCrypt.Net.BCrypt.Verify(password, (string)credentials["data"][0]["password"]);
+                    }
+                }
             }
 
-            // return false if username does not exist
-            return false;
+            else
+            {
+                Debug.WriteLine("Problem with GET request variables");
+                return false;
+            }
         }
 
 

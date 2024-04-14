@@ -3,8 +3,6 @@ using System;
 using System.Diagnostics;
 using System.Net.Http;
 using System.Reactive;
-using System.Reactive.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace ApiVault.ViewModels
@@ -48,6 +46,15 @@ namespace ApiVault.ViewModels
             get => _replaceDate;
         }
 
+        /* - - - - - - - - - - HTTP Variables - - - - - - - - - - */
+        // Environment variables should be securely retrieved, for example, from a configuration file or environment settings
+        private readonly string? astraDbId = Environment.GetEnvironmentVariable("ASTRA_DB_ID");
+        private readonly string? astraDbRegion = Environment.GetEnvironmentVariable("ASTRA_DB_REGION");
+        private readonly string? astraDbKeyspace = Environment.GetEnvironmentVariable("ASTRA_DB_KEYSPACE");
+        private readonly string? astraDbApplicationToken = Environment.GetEnvironmentVariable("ASTRA_DB_APPLICATION_TOKEN");
+
+        HttpClient httpClient = new HttpClient();
+
         public ApiKeyViewModel(Guid IdKey, string name, string key, string apiGroup, string apiReplaceData)
         {
             PrimaryKey = IdKey;
@@ -60,25 +67,26 @@ namespace ApiVault.ViewModels
 
         public async Task DeleteKeyAsync()
         {
-            // Environment variables should be securely retrieved, for example, from a configuration file or environment settings
-            var astraDbId = Environment.GetEnvironmentVariable("ASTRA_DB_ID");
-            var astraDbRegion = Environment.GetEnvironmentVariable("ASTRA_DB_REGION");
-            var astraDbKeyspace = Environment.GetEnvironmentVariable("ASTRA_DB_KEYSPACE");
-            var astraDbApplicationToken = Environment.GetEnvironmentVariable("ASTRA_DB_APPLICATION_TOKEN");
-
-            var httpClient = new HttpClient();
-            var astraDbService = new AstraDbService(httpClient, astraDbId, astraDbRegion, astraDbKeyspace, astraDbApplicationToken);
-
-            bool success = await astraDbService.DeleteApiKeyAsync("apikeys", PrimaryKey.ToString());
-
-            if (success)
+            if (astraDbId != null && astraDbRegion != null && astraDbKeyspace != null && astraDbApplicationToken != null && PrimaryKey != null)
             {
-                Debug.WriteLine("Deleted!");
+                var astraDbService = new AstraDbService(httpClient, astraDbId, astraDbRegion, astraDbKeyspace, astraDbApplicationToken);
+
+                bool success = await astraDbService.DeleteApiKeyAsync("apikeys", PrimaryKey.ToString());
+
+                if (success)
+                {
+                    Debug.WriteLine("Key deleted!");
+                }
+
+                else
+                {
+                    Debug.WriteLine("Failed deleting!");
+                }
             }
 
             else
             {
-                Debug.WriteLine("Failed deleting!");
+                Debug.WriteLine("Request variables are null");
             }
         }
 

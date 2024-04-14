@@ -2,6 +2,7 @@
 using System.Net.Http;
 using System.Threading.Tasks;
 using System;
+using System.Reflection.Metadata;
 
 public class AstraDbService
 {
@@ -18,15 +19,14 @@ public class AstraDbService
         _astraDbRegion = astraDbRegion;
         _astraDbKeyspace = astraDbKeyspace;
         _astraDbApplicationToken = astraDbApplicationToken;
-
-        // Set up the common headers for all requests
-        _httpClient.DefaultRequestHeaders.Add("x-cassandra-token", _astraDbApplicationToken);
     }
 
     public async Task<bool> DeleteApiKeyAsync(string tableName, string primaryKeyValue)
     {
         try
         {
+            SetHeaders();
+
             string endpoint = $"https://{_astraDbId}-{_astraDbRegion}.apps.astra.datastax.com/api/rest/v2/keyspaces/{_astraDbKeyspace}/{tableName}/{primaryKeyValue}";
 
             // Send DELETE request
@@ -50,4 +50,43 @@ public class AstraDbService
             return false;
         }
     }
+
+    public async Task<HttpContent?> GetUserCredentials(string tableName, string primaryKeyValue)
+    {
+        try
+        {
+            SetHeaders();
+
+            // route and headers
+            string endpoint = $"https://{_astraDbId}-{_astraDbRegion}.apps.astra.datastax.com/api/rest/v2/keyspaces/{_astraDbKeyspace}/{tableName}/{primaryKeyValue}";
+
+            // send get request
+            HttpResponseMessage response = await _httpClient.GetAsync(endpoint);
+
+            if (response.IsSuccessStatusCode)
+            {
+                return response.Content;
+            }
+
+            else
+            {
+                Debug.WriteLine($"Error getting credentials: {response.StatusCode}");
+                return null;
+            }
+        }
+
+        catch (Exception ex)
+        {
+            Debug.WriteLine(ex);
+            return null;
+        }
+    }
+
+    private void SetHeaders()
+    {
+        _httpClient.DefaultRequestHeaders.Clear();
+        _httpClient.DefaultRequestHeaders.Add("x-cassandra-token", _astraDbApplicationToken);
+        _httpClient.DefaultRequestHeaders.Add("Accept", "application/json");
+    }
+
 }
