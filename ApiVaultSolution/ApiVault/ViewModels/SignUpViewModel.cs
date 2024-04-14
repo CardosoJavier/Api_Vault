@@ -5,6 +5,7 @@ using System;
 using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
+using System.Net.Http;
 using System.Reactive;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -92,6 +93,15 @@ namespace ApiVault.ViewModels
             set => this.RaiseAndSetIfChanged(ref statusMessage, value);
         }
 
+        /* - - - - - - - - - - HTTP Client - - - - - - - - - - */
+        HttpClient httpClient = new HttpClient();
+
+        private readonly string? astraDbId = Environment.GetEnvironmentVariable("ASTRA_DB_ID");
+        private readonly string? astraDbRegion = Environment.GetEnvironmentVariable("ASTRA_DB_REGION");
+        private readonly string? astraDbKeyspace = Environment.GetEnvironmentVariable("ASTRA_DB_KEYSPACE");
+        private readonly string? astraDbApplicationToken = Environment.GetEnvironmentVariable("ASTRA_DB_APPLICATION_TOKEN");
+        private readonly string _table = "users";
+
         /* - - - - - - - - - - - Commands - - - - - - - - - - - */
         // Command for Sign Up
         public ReactiveCommand<Unit, Unit> SignUpCommand { get; }
@@ -130,19 +140,12 @@ namespace ApiVault.ViewModels
          */
         private async Task SignUp()
         {
-            var watch = System.Diagnostics.Stopwatch.StartNew();
-            try
+            // Check for empty fields
+            if (await verifyInput(Email, Username, Password, ConfirmPassword, Phone))
             {
-                // database connection
-                var watchDb = System.Diagnostics.Stopwatch.StartNew();
-                // var session = AstraDbConnection.GetSession().Result;
-                watchDb.Stop();
-                Debug.Print($"Connect to DB: {watchDb.ElapsedMilliseconds} ms");
-
-                // Check for empty fields
-                if (await verifyInput(Email, Username, Password, ConfirmPassword, Phone))
+                // Insert user logic here
+               try
                 {
-                    // Insert user logic here
                     var success = await InsertUser(Email, Username, Password, Phone);
                     if (success)
                     {
@@ -164,17 +167,11 @@ namespace ApiVault.ViewModels
                     }
                 }
 
-                // close database connection
+                catch (Exception ex)
+                {
+                    Debug.Print($"Sign Up exception: {ex}");
+                }
             }
-
-            catch 
-            {
-                Debug.Print("Error in database connection");
-            }
-
-            watch.Stop();
-            var elapsedMs = watch.ElapsedMilliseconds;
-            Debug.Print($"Overall Elapsed {elapsedMs} ms");
         }
 
 
@@ -182,36 +179,35 @@ namespace ApiVault.ViewModels
          * Insert new user in the database
          */
         private async Task<bool> InsertUser(string email, string username, string password, string phone)
-        {
-            var watch = System.Diagnostics.Stopwatch.StartNew();
-            try
+        {   
+            // Encrypt password
+            var hashedPassword = BCrypt.Net.BCrypt.HashPassword(password);
+
+            if (astraDbId != null && astraDbRegion != null && astraDbKeyspace != null && astraDbApplicationToken != null)
             {
-                // Encrypt password
-                var hashedPassword = BCrypt.Net.BCrypt.HashPassword(password);
+                AstraDbService dbService = new AstraDbService(httpClient, astraDbId, astraDbRegion, astraDbKeyspace, astraDbApplicationToken);
 
-                // Add new user query
-                var inserteUser = InitPoolSession.Prepare("INSERT INTO apivault_space.Users (username, email, password, phone) VALUES (?, ?, ?, ?)");
-                InitPoolSession.Execute(inserteUser.Bind(username, email, hashedPassword, phone));
+                if (username is not null && hashedPassword is not null && email is not null && phone is not null)
+                {
+                    try
+                    {
+                        return await dbService.InsertUser(_table, email, username, password, phone);
+                    }
 
-                // TODO: Verify user was inserted in table correctly
-                var veryfyUserQuery = InitPoolSession.Prepare("SELECT * FROM apivault_space.Users WHERE username = ?");
-                var checkNewUser = InitPoolSession.Execute(veryfyUserQuery.Bind(username));
+                    catch (Exception ex)
+                    {
+                        Debug.WriteLine($"InsertUser in Model: {ex}");
+                    }
+                }
 
-                watch.Stop();
-                var timePassed = watch.ElapsedMilliseconds;
-                Debug.Print($"Insert User Elapsed [t]: {timePassed} ms");
-
-                // Check if user was created
-                return checkNewUser.Any();
+                else
+                {
+                    Debug.WriteLine("Null values in insert user");
+                    return false;
+                }
             }
 
-            catch 
-            {
-                watch.Stop();
-                Debug.Print($"Insert User Elapsed [C]: {watch.ElapsedMilliseconds * 100} ms");
-                // TODO: Handle not successfull insert
-                return false;
-            }
+            return false;
         }
 
         // verify username, email, phone number, and password

@@ -3,6 +3,10 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using System;
 using System.Reflection.Metadata;
+using Newtonsoft.Json.Linq;
+using ApiVault.DataModels;
+using System.Text.Json;
+using System.Text;
 
 public class AstraDbService
 {
@@ -26,6 +30,13 @@ public class AstraDbService
         _httpClient.DefaultRequestHeaders.Clear();
         _httpClient.DefaultRequestHeaders.Add("x-cassandra-token", _astraDbApplicationToken);
         _httpClient.DefaultRequestHeaders.Add("Accept", "application/json");
+    }
+
+    private void SetPostHeaders()
+    {
+        _httpClient.DefaultRequestHeaders.Clear();
+        _httpClient.DefaultRequestHeaders.Add("x-cassandra-token", _astraDbApplicationToken);
+        _httpClient.DefaultRequestHeaders.Add("content-type", "application/json");
     }
 
     public async Task<bool> DeleteApiKeyAsync(string tableName, string primaryKeyValue)
@@ -123,5 +134,52 @@ public class AstraDbService
             return null;
         }
 
+    }
+
+    public async Task<bool> InsertUser(string tableName, string email, string username, string password, string phone)
+    {
+        // set headers
+        SetHeaders();
+
+        // endpoint
+        string endpoint = $"https://{_astraDbId}-{_astraDbRegion}.apps.astra.datastax.com/api/rest/v2/keyspaces/{_astraDbKeyspace}/{tableName}";
+
+        // Content
+        ApiUser newUser = new ApiUser
+        {
+            username = username,
+            email = email,
+            password = password,
+            phone = phone
+        };
+
+        string newUserJson = JsonSerializer.Serialize(newUser);
+        Debug.WriteLine($"{newUserJson}");
+
+        HttpContent requestContent = new StringContent(newUserJson, Encoding.UTF8, "application/json");
+
+        try
+        {
+            // Make request
+            HttpResponseMessage response = await _httpClient.PostAsync(endpoint, requestContent);
+
+            if (response.IsSuccessStatusCode)
+            {
+                return true;
+            }
+
+            else
+            {
+                string errorContent = await response.Content.ReadAsStringAsync();
+                Debug.WriteLine($"Error Response: {errorContent}");
+                return false;
+            }
+        }
+
+        catch(Exception e)
+        {
+            Debug.WriteLine($"InsertUser catch: {e}");
+            return false;
+        }
     }
 }

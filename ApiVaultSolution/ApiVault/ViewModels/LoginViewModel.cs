@@ -73,8 +73,6 @@ namespace ApiVault.ViewModels
 
         /* - - - - - - - - - - Methods - - - - - - - - - - */
 
-        
-
         // Function that checks credentials
         private async Task Login()
         {
