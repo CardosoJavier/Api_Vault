@@ -13,13 +13,13 @@
 	<Panel Background="{StaticResource WindowBg}">
 		<Border
 			Background="#272A31"
-					Height="550"
-					Width="400"
-					HorizontalAlignment="Center"
-					VerticalAlignment="Center"
-					CornerRadius="30"
-					BorderBrush="#7B62FD"
-					BorderThickness="2">
+			Height="550"
+			Width="400"
+			HorizontalAlignment="Center"
+			VerticalAlignment="Center"
+			CornerRadius="30"
+			BorderBrush="#7B62FD"
+			BorderThickness="2">
 			<StackPanel VerticalAlignment="Top">
 				<!-- Logo -->
 				<Image

@@ -33,13 +33,6 @@ public class AstraDbService
         _httpClient.DefaultRequestHeaders.Add("Accept", "application/json");
     }
 
-    private void SetPostHeaders()
-    {
-        _httpClient.DefaultRequestHeaders.Clear();
-        _httpClient.DefaultRequestHeaders.Add("x-cassandra-token", _astraDbApplicationToken);
-        _httpClient.DefaultRequestHeaders.Add("content-type", "application/json");
-    }
-
     public async Task<bool> DeleteApiKeyAsync(string tableName, string primaryKeyValue)
     {
         try

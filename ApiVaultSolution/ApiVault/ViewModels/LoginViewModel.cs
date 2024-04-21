@@ -146,8 +146,15 @@ namespace ApiVault.ViewModels
 
                     else
                     {
+
                         // verify password
-                        return BCrypt.Net.BCrypt.Verify(password, (string)credentials["data"][0]["password"]);
+                        if (BCrypt.Net.BCrypt.Verify(password, (string)credentials["data"][0]["password"]))
+                        {
+                            _userSessionService.Phone = (string)credentials["data"][0]["phone"];
+                            return true;
+                        }
+
+                        return false;
                     }
                 }
             }
@@ -158,7 +165,6 @@ namespace ApiVault.ViewModels
                 return false;
             }
         }
-
 
         // Enables user to submit once all form fields are filled
         private void UpdateCanSubmit()

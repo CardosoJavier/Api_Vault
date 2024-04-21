@@ -118,6 +118,9 @@ namespace ApiVault.ViewModels
             ApiKeysList = new ObservableCollection<ApiKeyViewModel>();
             Groups = new ObservableCollection<string>();
 
+            // Get api keys
+            GetAllApiKeys();
+
         }
 
         // - - - - - - - - - - Methods - - - - - - - -  - - 
@@ -134,6 +137,8 @@ namespace ApiVault.ViewModels
                 // Get API key object' data
                 if (getContent != null)
                 {
+                    IsLoading = false;
+
                     for (int i = 0; i < int.Parse((string)keys["count"]); i++)
                     {
                         var keyId = (Guid)keys["data"][i]["keyid"];

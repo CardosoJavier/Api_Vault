@@ -5,22 +5,22 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace ApiVault.Views
 {
-    public partial class LoginView : UserControl
+    public partial class _2FAPageView : UserControl
     {
-        // Constructor to initialize view component
-        public LoginView()
+        public _2FAPageView()
         {
             InitializeComponent();
 
             // Dependency injection
-            DataContext = App.ServiceProvider.GetService<LoginViewModel>();
+            DataContext = App.ServiceProvider.GetService<_2FAPageViewModel>();
 
-            if (DataContext is LoginViewModel viewModel)
+            if (DataContext is _2FAPageViewModel viewModel)
             {
-                viewModel.LoginSuccessful += (sender, e) => NavTo2FA();
+                viewModel.LoginSuccessful += (sender, e) => NavToDashboard();
             }
         }
 
+        // Navigates to dashboard
         private void NavToDashboard()
         {
             if (this.Parent is Window mainWindow)
@@ -29,21 +29,12 @@ namespace ApiVault.Views
             }
         }
 
-        private void NavTo2FA()
-        {
-            if (this.Parent is Window mainWindow)
-            {
-                mainWindow.Content = new _2FAPageView();
-            }
-        }
-
-        
         // Navigate to sign up view by reasingning main window content
-        private void NavToSignUpView(object sender, RoutedEventArgs e)
+        private void NavToLogin(object sender, RoutedEventArgs e)
         {
             if (this.Parent is Window mainWindow)
             {
-                mainWindow.Content = new SignUpView();
+                mainWindow.Content = new LoginView();
             }
         }
     }

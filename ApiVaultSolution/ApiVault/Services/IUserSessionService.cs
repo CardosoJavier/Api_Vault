@@ -10,6 +10,7 @@ namespace ApiVault.Services
     public interface IUserSessionService
     {
         string Username { get; set; }
+        string Phone { get; set; }
     }
 
     // User session implementation
@@ -17,6 +18,8 @@ namespace ApiVault.Services
     {
         // Interface variables
         public string Username {  set; get; }
+
+        public string Phone { set; get; }
 
         public void Logout()
         {

@@ -1,0 +1,79 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			 xmlns:vm="clr-namespace:ApiVault.ViewModels;assembly=ApiVault"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="ApiVault.Views._2FAPageView"
+			 x:DataType="vm:_2FAPageViewModel">
+	<Border
+		Background="#272A31"
+		Height="380"
+		Width="600"
+		HorizontalAlignment="Center"
+		VerticalAlignment="Center"
+		CornerRadius="30"
+		BorderBrush="#7B62FD"
+		BorderThickness="2">
+		<!-- Title and text box -->
+		<StackPanel
+			VerticalAlignment="Center"
+			HorizontalAlignment="Center">
+			<TextBlock
+				Margin="0 10 0 0"
+				Text="Two-Factor"
+				FontSize="35"
+				HorizontalAlignment="Center"
+				/>
+			<TextBlock
+				Text="authentication"
+				FontSize="35"
+				HorizontalAlignment="Center"/>
+		
+			<TextBlock
+				HorizontalAlignment="Center"
+				Margin="0 50 0 0"
+				Text="Enter the 6-digit code that was sent to your phone"
+				FontSize="18"/>
+		
+			<TextBox
+				Margin="0 10 0 0"
+				Width="430"
+				CaretBrush="Black"
+				Foreground="Black"
+				Text="{Binding User2FAInput}"
+				/>
+			
+			<TextBlock
+				HorizontalAlignment="Center"
+				Text="{Binding StatusMessage}"
+				Foreground="Red"
+				FontSize="12"
+				Margin="0 11 0 0"/>
+			
+			<Button
+				Margin="0 10 0 0"
+				HorizontalAlignment="Center"
+				Width="300"
+				Command="{Binding VerifyCode}">
+				<TextBlock 
+					Text="Verify"
+					FontSize="16"
+					HorizontalAlignment="Center"
+					VerticalAlignment="Center"/>
+			</Button>
+
+			<Button
+				Background="Transparent"
+				HorizontalAlignment="Center"
+				Margin="0 60 0 0"
+				Click="NavToLogin">
+				<TextBlock
+					Text="Return to login"
+					FontSize="12"/>
+			</Button>
+		
+		</StackPanel>
+	</Border>
+	
+</UserControl>

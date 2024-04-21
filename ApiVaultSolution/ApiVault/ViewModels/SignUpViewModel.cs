@@ -4,7 +4,6 @@ using ReactiveUI;
 using System;
 using System.Diagnostics;
 using System.Globalization;
-using System.Linq;
 using System.Net.Http;
 using System.Reactive;
 using System.Text.RegularExpressions;
@@ -174,7 +173,7 @@ namespace ApiVault.ViewModels
                 {
                     try
                     {
-                        return await dbService.InsertUser(_table, email, username, password, phone);
+                        return await dbService.InsertUser(_table, email, username, hashedPassword, phone);
                     }
 
                     catch (Exception ex)
