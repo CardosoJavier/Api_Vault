@@ -193,7 +193,7 @@ namespace ApiVault.ViewModels
                     {
                         apiGroups = NewGroup;
                     }
-
+                    
                     else
                     {
                         apiGroups = SelectedGroup;
@@ -224,6 +224,7 @@ namespace ApiVault.ViewModels
             DateTime expirationDate = currentDate.AddDays(daysToAdd);
             return expirationDate;
         }
+
 
         // Enables user to submit once all form fields are filled
         private void UpdateCanSubmit()

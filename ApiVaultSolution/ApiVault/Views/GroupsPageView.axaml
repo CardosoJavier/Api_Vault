@@ -2,7 +2,19 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			 xmlns:vm="clr-namespace:ApiVault.ViewModels;assembly=ApiVault"
+			 xmlns:local="using:ApiVault.Views"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-             x:Class="ApiVault.Views.GroupsPageView">
-	<TextBlock Background="#000000" Text="Groups" Foreground="White" Margin="10 20"></TextBlock>
+             x:Class="ApiVault.Views.GroupsPageView"
+	         x:DataType="vm:GroupsPageViewModel">
+	<Panel>
+		<!-- TODO: Display ApiKeyGroupView from GroupList from user session -->
+		<ItemsControl ItemsSource="{Binding GroupList}">
+        <ItemsControl.ItemTemplate>
+            <DataTemplate>
+                <local:ApiKeyGroupView />
+            </DataTemplate>
+        </ItemsControl.ItemTemplate>
+    </ItemsControl>
+	</Panel>
 </UserControl>

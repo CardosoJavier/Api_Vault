@@ -13,7 +13,6 @@ namespace ApiVault.ViewModels
 
         public event EventHandler? LoginSuccessful;
         private readonly IUserSessionService _userSessionService;
-        private string? _2faCode;
         private readonly string? _SID = Environment.GetEnvironmentVariable("TWILIO_ACCOUNT_SID");
         private readonly string? _AUTH = Environment.GetEnvironmentVariable("TWILIO_AUTH");
         private readonly string? _SERVICE_ID = Environment.GetEnvironmentVariable("TWILIO_SERVICE_ID");

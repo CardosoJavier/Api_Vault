@@ -2,6 +2,7 @@
 using ApiVault.Services;
 using Avalonia.Controls;
 using Cassandra;
+using DynamicData;
 using Newtonsoft.Json.Linq;
 using ReactiveUI;
 using System;
@@ -34,8 +35,8 @@ namespace ApiVault.ViewModels
         }
 
         // Search, filter, and sort
-        private string _filterCriteria;
-        public string FilterCriteria
+        private string? _filterCriteria;
+        public string? FilterCriteria
         {
             get => _filterCriteria;
             set
@@ -119,7 +120,7 @@ namespace ApiVault.ViewModels
             Groups = new ObservableCollection<string>();
 
             // Get api keys
-            GetAllApiKeys();
+            _ = GetAllApiKeys();
 
         }
 
@@ -131,34 +132,56 @@ namespace ApiVault.ViewModels
                 AstraDbService dbService = new AstraDbService(httpClient, astraDbId, astraDbRegion, astraDbKeyspace, astraDbApplicationToken);
                 string getContent = await dbService.GetApiKeys(_table, _userSessionService.Username);
 
-                // Convert content to JSON
-                JObject keys = JObject.Parse(getContent);
-
-                // Get API key object' data
                 if (getContent != null)
                 {
-                    IsLoading = false;
+                    // Convert content to JSON
+                    JObject keys = JObject.Parse(getContent);
 
-                    for (int i = 0; i < int.Parse((string)keys["count"]); i++)
+                    // Get API key object' data
+                    if (getContent != null)
                     {
-                        var keyId = (Guid)keys["data"][i]["keyid"];
-                        var apiName = (string)keys["data"][i]["apiname"];
-                        var apiKey = (string)keys["data"][i]["apikey"];
-                        var apiGroup = (string)keys["data"][i]["apigroup"];
-                        var replaceDate = (string)keys["data"][i]["replacedate"];
+                        IsLoading = false;
 
-                        ApiKeysList.Add(new ApiKeyViewModel(keyId, apiName, apiKey, apiGroup, replaceDate));
-
-                        if (!Groups.Contains(apiGroup))
+                        for (int i = 0; i < int.Parse((string)keys["count"]); i++)
                         {
-                            Groups.Add(apiGroup);
+                            var keyId = (Guid)keys["data"][i]["keyid"];
+                            var apiName = (string)keys["data"][i]["apiname"];
+                            var apiKey = (string)keys["data"][i]["apikey"];
+                            var apiGroup = (string)keys["data"][i]["apigroup"];
+                            var replaceDate = (string)keys["data"][i]["replacedate"];
+
+                            ApiKeysList.Add(new ApiKeyViewModel(keyId, apiName, apiKey, apiGroup, replaceDate));
+
+                            if (!Groups.Contains(apiGroup))
+                            {
+                                Groups.Add(apiGroup);
+                            }
+                        }
+
+                        _userSessionService.ApiKeysList = ApiKeysList;
+                        
+                        
+                        if (ApiKeysList.Count > 0)
+                        {
+                            var groups = ApiKeysList.GroupBy(apiKey => apiKey.Group);
+
+                            _userSessionService.GroupList = new ObservableCollection<ApiKeyGroupViewModel>();
+
+                            foreach (var group in groups)
+                            {
+                                string groupName = group.Key;
+                                var groupApiKeys = new ObservableCollection<ApiKeyViewModel>(group.ToList());
+
+                                var apiKeyGroupViewModel = new ApiKeyGroupViewModel(groupName, groupApiKeys);
+                                _userSessionService.GroupList.Add(apiKeyGroupViewModel);
+                            }
                         }
                     }
-                }
 
-                else
-                {
-                    Debug.WriteLine("Null content from API fetch");
+                    else
+                    {
+                        Debug.WriteLine("Null content from API fetch");
+                    }
                 }
             }
 
@@ -232,6 +255,7 @@ namespace ApiVault.ViewModels
 
             if (_sortCriteria is not null && _sortCriteria.Content is not null)
             {
+                Debug.WriteLine(_sortCriteria.Content.ToString());
                 switch (_sortCriteria.Content.ToString())
                 {
                     case "Name":
@@ -243,7 +267,14 @@ namespace ApiVault.ViewModels
                         break;
                     case "Newest":
                         // Directly using DateTimeOffset for comparison, assuming ReplaceDate is already a DateTimeOffset
-                        sortedList = ApiKeysList.OrderByDescending(apiKey => DateTimeOffset.ParseExact(apiKey.ReplaceDate, "yyyy-MM-dd HH:mm:ss", null)).ToList();
+                        sortedList = ApiKeysList.OrderByDescending(apiKey => {
+                            if (DateTimeOffset.TryParseExact(apiKey.ReplaceDate, "yyyy-MM-dd HH:mm:ss.fffffffzzz", null, System.Globalization.DateTimeStyles.None, out var dto))
+                            {
+                                return dto;
+                            }
+                            Debug.WriteLine("Invalid date format for: " + apiKey.ReplaceDate);
+                            return DateTimeOffset.MinValue; // or some default value
+                        }).ToList();
                         break;
                     case "Oldest":
                         sortedList = ApiKeysList.OrderBy(apiKey => DateTimeOffset.ParseExact(apiKey.ReplaceDate, "yyyy-MM-dd HH:mm:ss", null)).ToList();

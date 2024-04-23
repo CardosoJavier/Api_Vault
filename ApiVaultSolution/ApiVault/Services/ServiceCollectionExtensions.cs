@@ -18,6 +18,7 @@ namespace ApiVault.Services
             collection.AddTransient<Add_KeyPageViewModel>();
             collection.AddTransient<AppContentViewModel>();
             collection.AddTransient<_2FAPageViewModel>();
+            collection.AddTransient<GroupsPageViewModel>();
         }
     }
 }

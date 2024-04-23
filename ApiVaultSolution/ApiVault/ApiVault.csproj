@@ -55,6 +55,9 @@
 
 
   <ItemGroup>
+    <Compile Update="Views\ApiKeyGroupView.axaml.cs">
+      <DependentUpon>ApiKeyGroupView.axaml</DependentUpon>
+    </Compile>
     <Compile Update="Views\DashboardPageView.axaml.cs">
       <DependentUpon>DashboardPageView.axaml</DependentUpon>
     </Compile>

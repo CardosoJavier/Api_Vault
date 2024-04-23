@@ -1,0 +1,42 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			 xmlns:vm="clr-namespace:ApiVault.ViewModels;assembly=ApiVault"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="ApiVault.Views.ApiKeyGroupView"
+			 x:DataType="vm:ApiKeyGroupViewModel">
+	<Border
+		Background="#272A31"
+		Height="180"
+		Width="600"
+		HorizontalAlignment="Center"
+		VerticalAlignment="Center"
+		CornerRadius="30"
+		BorderBrush="#7B62FD"
+		BorderThickness="2"
+		Margin="0 15">
+		<StackPanel>
+			<TextBlock
+				Text="{Binding Group}"
+				FontSize="28"
+				Margin="0 25 0 0"
+				HorizontalAlignment="Center"/>
+			<StackPanel Orientation="Horizontal" 
+						HorizontalAlignment="Center"
+						Margin="0 50 0 0">
+				<Button
+					Margin="10 0"
+					Command="{Binding ReviewGroupCommand}">
+					<TextBlock>Review Group</TextBlock>
+				</Button>
+
+				<Button
+						Margin="10 0">
+					<TextBlock>Delete Group</TextBlock>
+				</Button>
+			</StackPanel>
+		</StackPanel>
+		
+	</Border>
+</UserControl>

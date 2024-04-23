@@ -1,0 +1,21 @@
+<!-- GroupDetailsView.axaml -->
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="using:ApiVault.Views"
+        xmlns:vm="clr-namespace:ApiVault.ViewModels;assembly=ApiVault"
+        mc:Ignorable="d"
+        x:Class="ApiVault.Views.GroupDetailsView"
+        x:DataType="vm:GroupDetailsViewModel"
+        Title="Group Details"
+        Width="800" Height="600">
+
+	<ItemsControl ItemsSource="{Binding ApiKeys}">
+		<ItemsControl.ItemTemplate>
+			<DataTemplate x:DataType="vm:ApiKeyViewModel">
+				<local:ApiKeyView />
+			</DataTemplate>
+		</ItemsControl.ItemTemplate>
+	</ItemsControl>
+</Window>
